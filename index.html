@@ -1,29 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AtHash Technologies | Security-First Automation</title>
+    <meta name="description" content="AtHash Technologies - Secure Automation & Systems Engineering">
+    <title>AtHash Technologies | Enterprise Automation</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        brand: {
-                            navy: '#0a192f',       // Main Background
-                            slate: '#112240',      // Card/Section Background
-                            teal: '#64ffda',       // Primary Accent
-                            tealDim: 'rgba(100, 255, 218, 0.1)',
-                            white: '#e6f1ff',      // Primary Text
-                            grey: '#8892b0',       // Secondary Text
-                        }
+                        navy: { 900: '#020c1b', 800: '#0a192f', 700: '#112240' },
+                        teal: { 400: '#64ffda', 900: 'rgba(100, 255, 218, 0.1)' },
+                        slate: { 400: '#8892b0', 200: '#e6f1ff' }
                     },
                     fontFamily: {
                         mono: ['"JetBrains Mono"', 'monospace'],
@@ -31,13 +28,7 @@
                     },
                     animation: {
                         'float': 'float 6s ease-in-out infinite',
-                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-20px)' },
-                        }
+                        'scan': 'scan 4s linear infinite',
                     }
                 }
             }
@@ -45,280 +36,314 @@
     </script>
 
     <style>
-        body { background-color: #0a192f; color: #e6f1ff; overflow-x: hidden; }
-        
-        /* Circuit Background Logic */
-        .circuit-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;
-            background-image: linear-gradient(rgba(100, 255, 218, 0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(100, 255, 218, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+        /* --- 10-YEAR ENGINEER LEVEL CSS --- */
+        body { background-color: #020c1b; color: #e6f1ff; overflow-x: hidden; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a192f; }
+        ::-webkit-scrollbar-thumb { background: #112240; border-radius: 4px; border: 1px solid #64ffda; }
+
+        /* CRT Scanline Effect Overlay */
+        .scanlines::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 999;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
         }
+
+        /* Glassmorphism Utilities */
+        .glass { background: rgba(17, 34, 64, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(100, 255, 218, 0.1); }
+        .glass-panel { background: rgba(10, 25, 47, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(100, 255, 218, 0.15); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); }
 
         /* Utilities */
         .cursor-blink { animation: blink 1s step-end infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-        .hidden-view { display: none !important; opacity: 0; }
-        .visible-view { display: block; opacity: 1; transition: opacity 0.5s; }
-        .interactive { position: relative; z-index: 50; cursor: pointer; }
         
-        /* Smooth Scroll */
-        html { scroll-behavior: smooth; }
+        .glow-text { text-shadow: 0 0 10px rgba(100, 255, 218, 0.3); }
+        
+        /* View Transitions */
+        .fade-enter { opacity: 0; transform: scale(0.98); }
+        .fade-enter-active { opacity: 1; transform: scale(1); transition: opacity 300ms, transform 300ms cubic-bezier(0.2, 0, 0, 1); }
+        .fade-exit { opacity: 1; transform: scale(1); }
+        .fade-exit-active { opacity: 0; transform: scale(1.02); transition: opacity 300ms; }
+        .hidden-force { display: none !important; }
+
+        /* Glitch Hover Effect */
+        .glitch-hover:hover { animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite; color: #64ffda; }
+        @keyframes glitch { 
+            0% { transform: translate(0) } 
+            20% { transform: translate(-2px, 2px) } 
+            40% { transform: translate(-2px, -2px) } 
+            60% { transform: translate(2px, 2px) } 
+            80% { transform: translate(2px, -2px) } 
+            100% { transform: translate(0) }
+        }
     </style>
 </head>
-<body class="font-sans antialiased selection:bg-brand-teal selection:text-brand-navy">
+<body class="font-sans antialiased selection:bg-teal-400 selection:text-navy-900 scanlines">
 
-    <div class="circuit-bg"></div>
+    <canvas id="network-canvas" class="fixed top-0 left-0 w-full h-full z-0 opacity-40 pointer-events-none"></canvas>
 
-    <div id="public-view" class="visible-view relative z-10">
+    <div id="view-public" class="relative z-10 transition-all duration-500">
         
-        <nav class="fixed top-0 w-full z-50 bg-brand-navy/90 backdrop-blur-md border-b border-brand-teal/10">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center h-20">
-                    <div class="flex-shrink-0 flex items-center gap-3 interactive">
-                        <img src="logo.png" alt="AtHash" class="h-10 w-auto rounded border border-brand-teal/20 shadow-lg" onerror="this.style.display='none'; this.nextElementSibling.innerHTML='AtHash_Tech'">
-                    </div>
+        <nav class="fixed top-0 w-full z-50 glass border-b border-teal-400/10">
+            <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+                <div class="flex items-center gap-3 group cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <div class="relative w-10 h-10 overflow-hidden rounded border border-teal-400/30 group-hover:border-teal-400 transition-colors bg-navy-800 flex items-center justify-center">
+                        <img src="logo.jpg" alt="Logo" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
+                        <i class="ph ph-shield-check text-2xl text-teal-400 hidden"></i> </div>
+                    <span class="font-mono font-bold text-xl tracking-tighter text-slate-200">AtHash<span class="text-teal-400">_inc</span></span>
+                </div>
                 
-                    <div class="hidden md:flex space-x-8 font-mono text-sm items-center">
-                        <a href="#services" class="interactive text-brand-grey hover:text-brand-teal transition-colors">./services</a>
-                        <a href="#audit" class="interactive text-brand-grey hover:text-brand-teal transition-colors">./security_audit</a>
-                        <button onclick="startLoginSequence()" class="interactive px-5 py-2 border border-brand-teal text-brand-teal rounded font-bold hover:bg-brand-teal hover:text-brand-navy transition-all shadow-[0_0_15px_rgba(100,255,218,0.1)]">
-                            CLIENT_LOGIN
-                        </button>
-                    </div>
+                <div class="hidden md:flex items-center gap-8 font-mono text-sm">
+                    <a href="#solutions" class="text-slate-400 hover:text-teal-400 transition-colors">./solutions</a>
+                    <a href="#audit" class="text-slate-400 hover:text-teal-400 transition-colors">./audit_tool</a>
+                    <button onclick="App.router.push('login')" class="px-5 py-2 border border-teal-400 text-teal-400 rounded hover:bg-teal-900/20 transition-all shadow-[0_0_15px_rgba(100,255,218,0.1)] hover:shadow-[0_0_20px_rgba(100,255,218,0.4)]">
+                        PORTAL_LOGIN
+                    </button>
                 </div>
             </div>
         </nav>
 
-        <section class="relative min-h-screen flex items-center justify-center pt-20">
-            <div class="max-w-7xl w-full mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                <div class="space-y-8 z-10">
-                    <div class="inline-flex items-center space-x-2 text-brand-teal font-mono text-xs tracking-widest bg-brand-tealDim px-3 py-1 rounded border border-brand-teal/20">
+        <main class="relative min-h-screen flex items-center justify-center pt-20 px-4">
+            <div class="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                
+                <div class="space-y-8 z-10 animate-[fadeIn_1s_ease-out]">
+                    <div class="inline-flex items-center gap-2 text-teal-400 font-mono text-xs tracking-widest bg-teal-900/30 px-3 py-1 rounded border border-teal-400/20">
                         <span class="relative flex h-2 w-2">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-teal opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-teal"></span>
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-teal-400"></span>
                         </span>
-                        <span>SYSTEM_STATUS: ONLINE</span>
+                        <span>SYSTEM_STATUS: OPERATIONAL</span>
                     </div>
 
-                    <h1 class="text-5xl md:text-7xl font-bold text-brand-white tracking-tight leading-tight">
-                        <span id="typewriter">AtHash</span><span class="cursor-blink text-brand-teal">_</span>
+                    <h1 class="text-5xl md:text-7xl font-bold text-slate-200 tracking-tight leading-[1.1]">
+                        <span id="typewriter">AtHash</span><span class="cursor-blink text-teal-400">_</span>
                     </h1>
 
-                    <p class="text-brand-grey text-lg leading-relaxed max-w-lg">
-                        <strong class="text-brand-white">Attach. Automate. Advance.</strong><br>
-                        We engineer secure, modular automation systems for the modern enterprise. Stop trading security for efficiency.
+                    <p class="text-slate-400 text-lg leading-relaxed max-w-lg">
+                        <span class="text-teal-400 font-semibold">Attach. Automate. Advance.</span><br>
+                        We engineer secure, modular automation systems for the enterprise. Stop trading security for velocity.
                     </p>
 
-                    <div class="flex gap-4 pt-2">
-                        <a href="#audit" class="interactive px-8 py-4 bg-brand-teal text-brand-navy font-bold font-mono rounded hover:bg-white transition-all duration-300 shadow-lg hover:shadow-brand-teal/50">
-                            START_AUDIT()
-                        </a>
-                        <a href="#services" class="interactive px-8 py-4 border border-brand-grey text-brand-grey font-mono rounded hover:text-brand-teal hover:border-brand-teal transition-all">
-                            VIEW_SOLUTIONS
-                        </a>
+                    <div class="flex flex-wrap gap-4 pt-4">
+                        <button onclick="document.getElementById('audit').scrollIntoView()" class="px-8 py-4 bg-teal-400 text-navy-900 font-bold font-mono rounded hover:bg-white hover:scale-105 transition-all shadow-lg shadow-teal-400/20">
+                            START_DIAGNOSTIC()
+                        </button>
+                        <button onclick="document.getElementById('solutions').scrollIntoView()" class="px-8 py-4 border border-slate-400 text-slate-400 font-mono rounded hover:text-teal-400 hover:border-teal-400 hover:bg-navy-700/50 transition-all">
+                            VIEW_ARCH
+                        </button>
                     </div>
                 </div>
 
-                <div class="hidden lg:block relative animate-float z-10">
-                    <div class="absolute -z-10 top-0 right-10 w-72 h-72 bg-brand-teal rounded-full opacity-10 blur-[100px]"></div>
-                    <div class="w-full max-w-lg bg-brand-slate rounded-lg border border-brand-teal/30 shadow-2xl overflow-hidden backdrop-blur-md bg-opacity-95">
-                        <div class="bg-[#020c1b] px-4 py-3 flex items-center space-x-2 border-b border-brand-teal/10">
-                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                            <span class="text-xs text-brand-grey font-mono ml-4 opacity-50">bash — athash-core</span>
-                        </div>
-                        <div class="p-6 font-mono text-sm space-y-3 h-[320px] overflow-y-auto" id="landing-terminal"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="services" class="py-24 bg-brand-slate/30 border-y border-brand-teal/5">
-            <div class="max-w-7xl mx-auto px-4">
-                <div class="text-center mb-16">
-                    <h2 class="text-3xl font-bold text-brand-white"><span class="text-brand-teal">01.</span> Core Capabilities</h2>
-                    <p class="text-brand-grey mt-4 max-w-2xl mx-auto">Our modular approach attaches to your existing infrastructure to automate workflows without compromising security.</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="interactive bg-brand-slate border border-brand-teal/10 p-8 rounded-lg hover:border-brand-teal/50 transition-all hover:-translate-y-2 group">
-                        <i class="ph ph-shield-check text-4xl text-brand-teal mb-4 group-hover:scale-110 transition-transform block"></i>
-                        <h3 class="text-xl font-bold text-brand-white mb-2">Secure Workflow</h3>
-                        <p class="text-brand-grey text-sm leading-relaxed">Identity & access management (IAM), onboarding workflows, and policy-driven controls. We build the Shield.</p>
-                    </div>
-                    <div class="interactive bg-brand-slate border border-brand-teal/10 p-8 rounded-lg hover:border-brand-teal/50 transition-all hover:-translate-y-2 group">
-                        <i class="ph ph-circuitry text-4xl text-brand-teal mb-4 group-hover:scale-110 transition-transform block"></i>
-                        <h3 class="text-xl font-bold text-brand-white mb-2">Operational Tools</h3>
-                        <p class="text-brand-grey text-sm leading-relaxed">Python/PowerShell scripting and low-code integration to bridge legacy SQL with modern cloud apps.</p>
-                    </div>
-                    <div class="interactive bg-brand-slate border border-brand-teal/10 p-8 rounded-lg hover:border-brand-teal/50 transition-all hover:-translate-y-2 group">
-                        <i class="ph ph-file-code text-4xl text-brand-teal mb-4 group-hover:scale-110 transition-transform block"></i>
-                        <h3 class="text-xl font-bold text-brand-white mb-2">Doc Intelligence</h3>
-                        <p class="text-brand-grey text-sm leading-relaxed">AI processors that automate CV parsing, contract generation, and compliance checks. Unlocking data from documents.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="audit" class="py-24 relative z-20">
-            <div class="max-w-4xl mx-auto px-4">
-                <div class="bg-brand-navy border border-brand-teal/20 rounded-xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-4 opacity-10"><i class="ph ph-lock-key text-9xl text-brand-teal"></i></div>
+                <div class="hidden lg:block relative z-10 group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-teal-400 to-blue-600 rounded-lg blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
                     
-                    <h2 class="text-2xl md:text-3xl font-bold text-brand-white mb-2">Security Diagnostic Tool</h2>
-                    <p class="text-brand-grey mb-8">Test your current automation maturity against Enterprise standards.</p>
-                    
-                    <form onsubmit="runAudit(event)" class="relative z-10">
-                        <div class="space-y-6">
-                            <div>
-                                <label class="block text-brand-teal font-mono text-sm mb-2">Q1: How are API Keys currently managed?</label>
-                                <select id="q1" class="interactive w-full bg-brand-slate border border-brand-grey/30 rounded p-4 text-brand-white focus:border-brand-teal outline-none transition-colors">
-                                    <option value="0">Plain Text / Hardcoded in Scripts</option>
-                                    <option value="5">Environment Variables (.env)</option>
-                                    <option value="10">Cloud Secret Manager (Vault/AWS)</option>
-                                </select>
+                    <div class="relative glass-panel rounded-lg overflow-hidden w-full max-w-lg transform group-hover:translate-y-[-5px] transition-transform duration-500">
+                        <div class="bg-navy-900 px-4 py-3 flex items-center justify-between border-b border-teal-400/10">
+                            <div class="flex gap-2">
+                                <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
                             </div>
-                            <button type="submit" class="interactive w-full py-4 bg-brand-teal/10 border border-brand-teal text-brand-teal font-bold rounded hover:bg-brand-teal hover:text-brand-navy transition-all uppercase tracking-widest text-sm">
-                                Run System Analysis
-                            </button>
+                            <span class="text-xs text-slate-400 font-mono opacity-60">root@athash-core:~</span>
                         </div>
-                    </form>
-                    
-                    <div id="auditResult" class="hidden mt-8 border-t border-brand-grey/20 pt-6">
-                        <div class="flex justify-between text-xs font-mono text-brand-grey mb-2">
-                            <span>RISK_ASSESSMENT</span>
-                            <span id="scoreText">CALCULATING...</span>
+                        <div class="p-6 font-mono text-sm h-[320px] overflow-y-auto" id="landing-terminal">
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <section id="solutions" class="py-32 relative">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="glass-panel p-8 rounded-xl hover:border-teal-400/50 transition-all duration-300 group">
+                        <div class="w-12 h-12 bg-navy-800 rounded-lg flex items-center justify-center mb-6 border border-teal-400/20 group-hover:border-teal-400 transition-colors">
+                            <i class="ph ph-shield-check text-2xl text-teal-400"></i>
                         </div>
-                        <div class="w-full bg-brand-slate h-2 rounded-full overflow-hidden">
-                            <div id="scoreBar" class="h-full bg-brand-teal transition-all duration-1000" style="width: 0%"></div>
+                        <h3 class="text-xl font-bold text-slate-200 mb-3">Secure Workflow</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">Identity & access management (IAM) and policy-driven controls. We build the Shield around your data.</p>
+                    </div>
+                    <div class="glass-panel p-8 rounded-xl hover:border-teal-400/50 transition-all duration-300 group">
+                        <div class="w-12 h-12 bg-navy-800 rounded-lg flex items-center justify-center mb-6 border border-teal-400/20 group-hover:border-teal-400 transition-colors">
+                            <i class="ph ph-circuitry text-2xl text-teal-400"></i>
                         </div>
-                        <p id="scoreMessage" class="mt-4 text-sm font-mono text-brand-teal"></p>
+                        <h3 class="text-xl font-bold text-slate-200 mb-3">Operational Tools</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">Python/PowerShell scripting to bridge legacy SQL with modern cloud apps. The missing link.</p>
+                    </div>
+                    <div class="glass-panel p-8 rounded-xl hover:border-teal-400/50 transition-all duration-300 group">
+                        <div class="w-12 h-12 bg-navy-800 rounded-lg flex items-center justify-center mb-6 border border-teal-400/20 group-hover:border-teal-400 transition-colors">
+                            <i class="ph ph-robot text-2xl text-teal-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-200 mb-3">Doc Intelligence</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">AI processors for CV parsing and contract compliance. Turn flat files into structured databases.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <footer class="py-8 border-t border-brand-teal/10 bg-brand-navy text-center">
-            <p class="text-brand-grey text-sm font-mono">© 2025 AtHash Technologies. All Systems Operational.</p>
+        <section id="audit" class="py-24 pb-40">
+            <div class="max-w-4xl mx-auto px-6">
+                <div class="glass-panel rounded-2xl p-1 md:p-12 relative overflow-hidden border-t-4 border-t-teal-400">
+                    <div class="relative z-10">
+                        <h2 class="text-3xl font-bold text-slate-200 mb-2">Security Diagnostic</h2>
+                        <p class="text-slate-400 mb-8">Evaluate your automation maturity against our Zero-Trust standards.</p>
+                        
+                        <form onsubmit="App.runAudit(event)" class="space-y-6">
+                            <div class="space-y-2">
+                                <label class="block text-teal-400 font-mono text-sm">Target Protocol: API Key Storage</label>
+                                <div class="relative">
+                                    <select id="q1" class="w-full bg-navy-900/50 border border-slate-400/20 rounded px-4 py-3 text-slate-200 focus:border-teal-400 focus:outline-none appearance-none transition-colors">
+                                        <option value="0">Critical: Hardcoded in scripts</option>
+                                        <option value="5">Warning: Environment Variables (.env)</option>
+                                        <option value="10">Secure: Cloud Secret Manager (Vault/AWS)</option>
+                                    </select>
+                                    <i class="ph ph-caret-down absolute right-4 top-3.5 text-slate-400 pointer-events-none"></i>
+                                </div>
+                            </div>
+                            <button type="submit" class="w-full py-4 bg-teal-400/10 border border-teal-400 text-teal-400 font-bold rounded hover:bg-teal-400 hover:text-navy-900 transition-all uppercase tracking-widest text-sm flex items-center justify-center gap-2">
+                                <i class="ph ph-lightning"></i> Run Analysis
+                            </button>
+                        </form>
+                        
+                        <div id="auditResult" class="hidden mt-8 pt-6 border-t border-slate-400/10 transition-all">
+                            <div class="flex justify-between font-mono text-xs text-slate-400 mb-2">
+                                <span>RISK_SCORE</span>
+                                <span id="scoreText" class="text-teal-400 animate-pulse">CALCULATING...</span>
+                            </div>
+                            <div class="h-2 bg-navy-900 rounded-full overflow-hidden">
+                                <div id="scoreBar" class="h-full w-0 transition-all duration-1000 ease-out"></div>
+                            </div>
+                            <p id="scoreMessage" class="mt-4 font-mono text-sm"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <footer class="border-t border-teal-400/10 py-8 text-center text-slate-400 font-mono text-xs">
+            <p>&copy; 2025 AtHash Technologies. All Systems Operational.</p>
         </footer>
     </div>
 
-    <div id="loading-view" class="hidden-view fixed inset-0 z-[100] bg-brand-navy flex flex-col items-center justify-center">
+    <div id="view-loading" class="hidden-force fixed inset-0 z-50 bg-navy-900 flex flex-col items-center justify-center">
         <div class="relative">
-            <div class="w-16 h-16 border-4 border-brand-teal border-t-transparent rounded-full animate-spin"></div>
-            <div class="absolute inset-0 flex items-center justify-center">
-                <div class="w-2 h-2 bg-brand-teal rounded-full animate-pulse"></div>
-            </div>
+            <div class="w-20 h-20 border-4 border-navy-700 border-t-teal-400 rounded-full animate-spin"></div>
+            <div class="absolute inset-0 flex items-center justify-center font-mono text-xs text-teal-400 font-bold">AH</div>
         </div>
-        <p class="mt-6 font-mono text-brand-teal text-sm tracking-widest animate-pulse">ESTABLISHING_SECURE_HANDSHAKE...</p>
+        <div class="mt-6 font-mono text-teal-400 text-xs tracking-widest" id="loading-text">INITIALIZING_HANDSHAKE...</div>
     </div>
 
-    <div id="app-view" class="hidden-view fixed inset-0 z-50 flex h-screen overflow-hidden bg-brand-navy">
+    <div id="view-dashboard" class="hidden-force fixed inset-0 z-40 bg-navy-900 flex h-screen overflow-hidden">
         
-        <aside class="w-64 flex-shrink-0 border-r border-brand-teal/10 bg-brand-navy hidden md:flex flex-col">
-            <div class="h-16 flex items-center px-6 border-b border-brand-teal/10 gap-3">
-                <img src="logo.png" alt="AH" class="h-8 w-auto rounded border border-brand-teal/20" onerror="this.style.display='none'">
-                <div class="font-mono font-bold text-xl text-brand-white">AtHash<span class="text-brand-teal">_OS</span></div>
+        <aside class="w-64 bg-navy-800 border-r border-teal-400/10 flex-col hidden md:flex">
+            <div class="h-16 flex items-center px-6 border-b border-teal-400/10 gap-3">
+                <div class="w-8 h-8 bg-teal-400/10 rounded border border-teal-400/30 flex items-center justify-center text-teal-400">
+                    <i class="ph ph-shield-check"></i>
+                </div>
+                <div class="font-mono font-bold text-lg text-slate-200">AtHash<span class="text-teal-400">_OS</span></div>
             </div>
             
-            <nav class="flex-1 px-3 py-6 space-y-1">
-                <a href="#" class="bg-brand-teal/10 text-brand-teal group flex items-center px-3 py-2.5 text-sm font-mono rounded-md border-l-2 border-brand-teal transition-all">
-                    <i class="ph ph-squares-four text-lg mr-3"></i> Dashboard
+            <nav class="flex-1 px-4 py-6 space-y-1 font-mono text-sm">
+                <a href="#" class="flex items-center gap-3 px-4 py-3 bg-teal-400/10 text-teal-400 border-l-2 border-teal-400 rounded-r">
+                    <i class="ph ph-squares-four text-lg"></i> Dashboard
                 </a>
-                <a href="#" class="text-brand-grey hover:bg-brand-slate hover:text-brand-white group flex items-center px-3 py-2.5 text-sm font-mono rounded-md transition-all">
-                    <i class="ph ph-lightning text-lg mr-3"></i> Active_Builds
+                <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-navy-700 hover:text-slate-200 rounded transition-colors">
+                    <i class="ph ph-git-branch text-lg"></i> Pipelines
                 </a>
-                <a href="#" class="text-brand-grey hover:bg-brand-slate hover:text-brand-white group flex items-center px-3 py-2.5 text-sm font-mono rounded-md transition-all">
-                    <i class="ph ph-files text-lg mr-3"></i> Data_Vault
-                </a>
-                <div class="mt-8 px-3 text-xs font-semibold text-brand-grey/50 uppercase tracking-wider font-mono">Configuration</div>
-                <a href="#" class="text-brand-grey hover:bg-brand-slate hover:text-brand-white group flex items-center px-3 py-2.5 text-sm font-mono rounded-md transition-all">
-                    <i class="ph ph-key text-lg mr-3"></i> API_Keys
+                <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-navy-700 hover:text-slate-200 rounded transition-colors">
+                    <i class="ph ph-database text-lg"></i> Data_Vault
                 </a>
             </nav>
 
-            <div class="p-4 border-t border-brand-teal/10">
-                <button onclick="logoutSequence()" class="interactive flex items-center text-sm font-mono text-brand-grey hover:text-red-400 transition-colors w-full">
-                    <i class="ph ph-sign-out mr-2"></i> DISCONNECT
+            <div class="p-4 border-t border-teal-400/10">
+                <button onclick="App.router.push('home')" class="w-full flex items-center justify-center gap-2 py-2 text-slate-400 hover:text-red-400 transition-colors font-mono text-xs border border-transparent hover:border-red-400/20 rounded">
+                    <i class="ph ph-sign-out"></i> DISCONNECT
                 </button>
             </div>
         </aside>
 
-        <main class="flex-1 flex flex-col min-w-0 overflow-hidden relative z-10">
-            <header class="h-16 flex items-center justify-between px-6 border-b border-brand-teal/10 bg-brand-navy/90 backdrop-blur">
-                <h2 class="text-brand-white font-mono text-sm opacity-80">root<span class="text-brand-grey">/</span>dashboard</h2>
-                <div class="flex items-center space-x-4">
-                    <span class="h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
-                    <span class="text-xs font-mono text-brand-teal">SYSTEM_OPTIMAL</span>
+        <main class="flex-1 flex flex-col relative overflow-hidden">
+            <header class="h-16 bg-navy-800/50 backdrop-blur border-b border-teal-400/10 flex items-center justify-between px-8">
+                <div class="font-mono text-xs text-slate-400">
+                    root <span class="text-teal-400">/</span> overview
+                </div>
+                <div class="flex items-center gap-2 px-3 py-1 bg-green-500/10 rounded border border-green-500/20">
+                    <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span class="font-mono text-xs text-green-400">LIVE_CONNECTION</span>
                 </div>
             </header>
 
-            <div class="flex-1 overflow-y-auto p-8 scroll-smooth">
+            <div class="flex-1 overflow-y-auto p-8">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div class="bg-brand-slate border border-brand-grey/10 rounded-lg p-6 hover:border-brand-teal/50 transition-colors group">
-                        <div class="flex justify-between items-start">
-                            <h3 class="text-brand-grey text-xs font-mono uppercase">Active Scripts</h3>
-                            <i class="ph ph-code text-brand-teal opacity-50 group-hover:opacity-100"></i>
+                    <div class="glass-panel p-6 rounded-lg relative overflow-hidden group">
+                        <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <i class="ph ph-code text-6xl text-teal-400"></i>
                         </div>
-                        <div class="mt-2 text-4xl font-bold text-brand-white">12</div>
+                        <div class="text-xs font-mono text-slate-400 uppercase tracking-wider mb-2">Active Scripts</div>
+                        <div class="text-3xl font-bold text-slate-200">14</div>
+                        <div class="mt-2 text-xs text-green-400 flex items-center gap-1">
+                            <i class="ph ph-trend-up"></i> +2 this week
+                        </div>
                     </div>
-                    <div class="bg-brand-slate border border-brand-grey/10 rounded-lg p-6 hover:border-brand-teal/50 transition-colors group">
-                        <div class="flex justify-between items-start">
-                            <h3 class="text-brand-grey text-xs font-mono uppercase">Docs Processed</h3>
-                            <i class="ph ph-file-text text-brand-teal opacity-50 group-hover:opacity-100"></i>
+                    <div class="glass-panel p-6 rounded-lg relative overflow-hidden group">
+                        <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <i class="ph ph-file-text text-6xl text-blue-400"></i>
                         </div>
-                        <div class="mt-2 text-4xl font-bold text-brand-white">1,240</div>
+                        <div class="text-xs font-mono text-slate-400 uppercase tracking-wider mb-2">Docs Processed</div>
+                        <div class="text-3xl font-bold text-slate-200">1,240</div>
+                        <div class="mt-2 text-xs text-slate-400">99.8% Accuracy</div>
                     </div>
-                    <div class="bg-brand-slate border border-brand-grey/10 rounded-lg p-6 hover:border-brand-teal/50 transition-colors group">
-                        <div class="flex justify-between items-start">
-                            <h3 class="text-brand-grey text-xs font-mono uppercase">Security Flags</h3>
-                            <i class="ph ph-shield-check text-green-400 opacity-50 group-hover:opacity-100"></i>
+                    <div class="glass-panel p-6 rounded-lg relative overflow-hidden">
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="text-xs font-mono text-slate-400 uppercase tracking-wider">Server Load</div>
+                            <div class="text-teal-400 font-bold text-sm" id="load-val">42%</div>
                         </div>
-                        <div class="mt-2 text-4xl font-bold text-green-400">0</div>
+                        <div class="flex items-end justify-between gap-1 h-12" id="live-bars">
+                            </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 h-full">
                     <div class="lg:col-span-2 space-y-6">
-                        <h2 class="text-brand-white font-bold text-lg">Active Workflows</h2>
-                        <div class="bg-brand-slate/50 border border-brand-grey/10 rounded-lg p-6 hover:bg-brand-slate transition-colors">
-                            <div class="flex justify-between items-center mb-2">
-                                <h3 class="text-brand-white font-semibold flex items-center gap-2"><i class="ph ph-users text-blue-400"></i> HR Onboarding Pipeline</h3>
-                                <span class="text-xs font-mono text-blue-400 bg-blue-500/10 px-2 py-1 rounded border border-blue-500/20">RUNNING</span>
+                        <h3 class="text-slate-200 font-bold font-mono">Running Pipelines</h3>
+                        
+                        <div class="glass-panel p-5 rounded border-l-4 border-l-teal-400 hover:bg-navy-700/50 transition-colors cursor-pointer">
+                            <div class="flex justify-between items-start mb-2">
+                                <div class="font-bold text-slate-200 flex items-center gap-2">
+                                    <i class="ph ph-users text-blue-400"></i> HR Onboarding
+                                </div>
+                                <span class="text-[10px] bg-blue-500/10 text-blue-400 px-2 py-1 rounded border border-blue-500/20 font-mono">PROVISIONING</span>
                             </div>
-                            <div class="w-full bg-brand-navy rounded-full h-2 mt-4">
-                                <div class="bg-brand-teal h-2 rounded-full shadow-[0_0_10px_#64ffda]" style="width: 75%"></div>
-                            </div>
-                            <div class="flex justify-between mt-2 text-xs text-brand-grey font-mono">
-                                <span>Provisioning AWS...</span>
-                                <span>75%</span>
+                            <div class="w-full bg-navy-900 rounded-full h-1.5 mt-3">
+                                <div class="bg-teal-400 h-1.5 rounded-full shadow-[0_0_10px_#64ffda]" style="width: 75%"></div>
                             </div>
                         </div>
-                        
-                         <div class="bg-brand-slate/50 border border-brand-grey/10 rounded-lg p-6 hover:bg-brand-slate transition-colors opacity-75">
-                            <div class="flex justify-between items-center mb-2">
-                                <h3 class="text-brand-white font-semibold flex items-center gap-2"><i class="ph ph-database text-purple-400"></i> Legacy SQL Bridge</h3>
-                                <span class="text-xs font-mono text-brand-grey border border-brand-grey px-2 py-1 rounded">IDLE</span>
+
+                        <div class="glass-panel p-5 rounded border-l-4 border-l-purple-500 hover:bg-navy-700/50 transition-colors opacity-75">
+                            <div class="flex justify-between items-start mb-2">
+                                <div class="font-bold text-slate-200 flex items-center gap-2">
+                                    <i class="ph ph-database text-purple-400"></i> SQL Sync Bridge
+                                </div>
+                                <span class="text-[10px] bg-slate-700/30 text-slate-400 px-2 py-1 rounded border border-slate-600 font-mono">IDLE</span>
                             </div>
-                            <div class="w-full bg-brand-navy rounded-full h-2 mt-4">
-                                <div class="bg-brand-teal h-2 rounded-full" style="width: 100%"></div>
-                            </div>
-                            <div class="flex justify-between mt-2 text-xs text-brand-grey font-mono">
-                                <span>Last sync: 2h ago</span>
-                                <span>Complete</span>
+                            <div class="w-full bg-navy-900 rounded-full h-1.5 mt-3">
+                                <div class="bg-purple-500 h-1.5 rounded-full" style="width: 100%"></div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="bg-[#050f1e] rounded-lg border border-brand-teal/20 h-[350px] flex flex-col shadow-inner">
-                        <div class="bg-brand-navy px-4 py-3 border-b border-brand-teal/10 text-xs font-mono text-brand-grey flex justify-between items-center">
-                            <span>System Logs</span>
-                            <span class="flex items-center gap-1 text-green-500"><span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Live</span>
+                    <div class="glass-panel rounded-lg flex flex-col h-[400px]">
+                        <div class="bg-navy-900 px-4 py-3 border-b border-teal-400/10 flex justify-between items-center">
+                            <span class="text-xs font-mono text-slate-400">sys_log.txt</span>
                         </div>
-                        <div class="p-4 font-mono text-xs space-y-3 overflow-y-auto flex-1 custom-scrollbar" id="dashboard-logs">
+                        <div id="dashboard-logs" class="flex-1 p-4 font-mono text-xs overflow-y-auto space-y-2 custom-scrollbar">
                             </div>
                     </div>
                 </div>
@@ -327,122 +352,254 @@
     </div>
 
     <script>
-        // 1. TYPEWRITER EFFECT
-        const textElement = document.getElementById('typewriter');
-        const phrases = ["Attach.", "Automate.", "Advance."];
-        let phraseIndex = 0, charIndex = 0, isDeleting = false;
-        
-        function type() {
-            const currentPhrase = phrases[phraseIndex];
-            textElement.innerHTML = currentPhrase.substring(0, charIndex + (isDeleting ? -1 : 1));
-            charIndex += isDeleting ? -1 : 1;
-            let speed = isDeleting ? 50 : 150;
-            if (!isDeleting && charIndex === currentPhrase.length) {
-                if(phraseIndex === 2) return; 
-                speed = 2000; isDeleting = true;
-            } else if (isDeleting && charIndex === 0) { isDeleting = false; phraseIndex++; speed = 500; }
-            setTimeout(type, speed);
-        }
-        setTimeout(type, 1000);
+        /**
+         * 10-YEAR ENGINEER ARCHITECTURE
+         * Organized into a singleton 'App' object for state management and clean namespaces.
+         */
+        const App = {
+            state: {
+                view: 'public', // public | loading | dashboard
+                auditScore: 0,
+                intervals: []
+            },
 
-        // 2. HERO TERMINAL SIMULATION
-        const terminalBody = document.getElementById('landing-terminal');
-        const commands = [
-            { text: "athash init --secure", color: "text-brand-white" },
-            { text: "> Encrypting data streams...", color: "text-brand-grey" },
-            { text: "> Optimizing logic nodes...", color: "text-brand-grey" },
-            { text: "[SUCCESS] Protocol Established.", color: "text-green-400 font-bold" }
-        ];
-        let cmdIdx = 0;
-        function runLandingTerminal() {
-            if (cmdIdx < commands.length) {
-                const div = document.createElement('div');
-                div.className = commands[cmdIdx].color;
-                div.innerHTML = (cmdIdx === 0 ? '<span class="text-brand-teal mr-2">➜</span>' : '') + commands[cmdIdx].text;
-                terminalBody.appendChild(div);
-                cmdIdx++;
-                setTimeout(runLandingTerminal, 1200);
-            }
-        }
-        runLandingTerminal();
-
-        // 3. AUDIT FORM LOGIC
-        function runAudit(e) {
-            e.preventDefault();
-            document.getElementById('auditResult').classList.remove('hidden');
-            const val = parseInt(document.getElementById('q1').value);
-            const scoreBar = document.getElementById('scoreBar');
-            const msg = document.getElementById('scoreMessage');
-            const scoreText = document.getElementById('scoreText');
-            
-            scoreText.innerText = "ANALYZING...";
-            
-            setTimeout(() => {
-                if(val > 5) { 
-                    scoreBar.style.width = '100%'; 
-                    scoreBar.className = 'h-full bg-brand-teal transition-all duration-1000';
-                    msg.innerText = "EXCELLENT: Secure architecture detected. Enterprise Ready."; 
-                    msg.className = "mt-4 text-sm font-mono text-green-400";
-                    scoreText.innerText = "SCORE: 100/100";
-                } else { 
-                    scoreBar.style.width = '30%'; 
-                    scoreBar.className = 'h-full bg-red-500 transition-all duration-1000';
-                    msg.innerText = "CRITICAL: Insecure key storage detected. Data breach risk high."; 
-                    msg.className = "mt-4 text-sm font-mono text-red-400";
-                    scoreText.innerText = "SCORE: 30/100";
+            // --- ROUTER SYSTEM ---
+            router: {
+                push(target) {
+                    if (target === 'login') {
+                        App.ui.switchView('loading');
+                        setTimeout(() => {
+                            App.ui.switchView('dashboard');
+                            App.dashboard.init();
+                        }, 1500);
+                    } else if (target === 'home') {
+                        App.ui.switchView('public');
+                        App.dashboard.stop();
+                    }
                 }
-            }, 500);
-        }
+            },
 
-        // 4. LOGIN / DASHBOARD TRANSITION
-        let logInterval;
-        
-        function startLoginSequence() {
-            const publicView = document.getElementById('public-view');
-            publicView.style.opacity = '0';
-            setTimeout(() => {
-                publicView.classList.add('hidden-view');
-                const loader = document.getElementById('loading-view');
-                loader.classList.remove('hidden-view');
+            // --- UI CONTROLLERS ---
+            ui: {
+                switchView(viewName) {
+                    const views = ['view-public', 'view-loading', 'view-dashboard'];
+                    views.forEach(id => {
+                        const el = document.getElementById(id);
+                        if (id === `view-${viewName}`) {
+                            el.classList.remove('hidden-force');
+                            // Small delay to allow display:block to render before opacity transition
+                            requestAnimationFrame(() => {
+                                el.classList.add('fade-enter-active');
+                                el.classList.remove('fade-enter');
+                            });
+                        } else {
+                            el.classList.add('hidden-force');
+                            el.classList.remove('fade-enter-active');
+                        }
+                    });
+                }
+            },
+
+            // --- FEATURE: CANVAS BACKGROUND ---
+            canvas: {
+                init() {
+                    const canvas = document.getElementById('network-canvas');
+                    const ctx = canvas.getContext('2d');
+                    let width, height;
+                    const particles = [];
+                    
+                    const resize = () => {
+                        width = canvas.width = window.innerWidth;
+                        height = canvas.height = window.innerHeight;
+                    };
+                    
+                    class Particle {
+                        constructor() {
+                            this.x = Math.random() * width;
+                            this.y = Math.random() * height;
+                            this.vx = (Math.random() - 0.5) * 0.5;
+                            this.vy = (Math.random() - 0.5) * 0.5;
+                            this.size = Math.random() * 2;
+                        }
+                        update() {
+                            this.x += this.vx;
+                            this.y += this.vy;
+                            if (this.x < 0 || this.x > width) this.vx *= -1;
+                            if (this.y < 0 || this.y > height) this.vy *= -1;
+                        }
+                        draw() {
+                            ctx.fillStyle = 'rgba(100, 255, 218, 0.5)';
+                            ctx.beginPath();
+                            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                    }
+
+                    for (let i = 0; i < 50; i++) particles.push(new Particle());
+
+                    const animate = () => {
+                        ctx.clearRect(0, 0, width, height);
+                        particles.forEach(p => {
+                            p.update();
+                            p.draw();
+                            // Draw connections if close
+                            particles.forEach(p2 => {
+                                const dx = p.x - p2.x;
+                                const dy = p.y - p2.y;
+                                const dist = Math.sqrt(dx * dx + dy * dy);
+                                if (dist < 150) {
+                                    ctx.strokeStyle = `rgba(100, 255, 218, ${0.1 - dist/1500})`;
+                                    ctx.lineWidth = 0.5;
+                                    ctx.beginPath();
+                                    ctx.moveTo(p.x, p.y);
+                                    ctx.lineTo(p2.x, p2.y);
+                                    ctx.stroke();
+                                }
+                            });
+                        });
+                        requestAnimationFrame(animate);
+                    };
+
+                    window.addEventListener('resize', resize);
+                    resize();
+                    animate();
+                }
+            },
+
+            // --- FEATURE: TERMINAL ---
+            terminal: {
+                init() {
+                    const el = document.getElementById('landing-terminal');
+                    const commands = [
+                        { text: "athash init --secure", class: "text-slate-200" },
+                        { text: "> Verifying SSL certificates...", class: "text-slate-400" },
+                        { text: "> Encrypting data streams (AES-256)...", class: "text-slate-400" },
+                        { text: "> Optimizing logic nodes...", class: "text-slate-400" },
+                        { text: "[SUCCESS] Protocol Established.", class: "text-green-400 font-bold" }
+                    ];
+                    let i = 0;
+                    
+                    const print = () => {
+                        if (i >= commands.length) return;
+                        const div = document.createElement('div');
+                        div.className = `mb-1 ${commands[i].class}`;
+                        div.innerHTML = (i === 0 ? '<span class="text-teal-400 mr-2">➜</span>' : '') + commands[i].text;
+                        el.appendChild(div);
+                        el.scrollTop = el.scrollHeight;
+                        i++;
+                        setTimeout(print, Math.random() * 500 + 500);
+                    };
+                    print();
+                }
+            },
+
+            // --- FEATURE: DASHBOARD LOGIC ---
+            dashboard: {
+                init() {
+                    this.startLogs();
+                    this.startChart();
+                },
+                stop() {
+                    App.state.intervals.forEach(clearInterval);
+                    App.state.intervals = [];
+                },
+                startLogs() {
+                    const container = document.getElementById('dashboard-logs');
+                    const msgs = [
+                        "Auth: Handshake 192.168.1.42 verified",
+                        "CV_Parser: Batch #4092 complete",
+                        "Azure_AD: Sync delta applied (3ms)",
+                        "Sec_Ops: Zero-Trust challenge passed",
+                        "API: Rate limit check OK"
+                    ];
+                    
+                    const addLog = () => {
+                        const div = document.createElement('div');
+                        const time = new Date().toLocaleTimeString('en-US', {hour12: false});
+                        div.className = "text-slate-400 border-l-2 border-teal-400/20 pl-2 animate-[fadeIn_0.3s]";
+                        div.innerHTML = `<span class="opacity-50 mr-2 text-[10px]">[${time}]</span> ${msgs[Math.floor(Math.random() * msgs.length)]}`;
+                        container.prepend(div);
+                        if (container.children.length > 15) container.lastChild.remove();
+                    };
+
+                    const id = setInterval(addLog, 2000);
+                    App.state.intervals.push(id);
+                },
+                startChart() {
+                    const container = document.getElementById('live-bars');
+                    // Create initial bars
+                    for(let i=0; i<20; i++) {
+                        const bar = document.createElement('div');
+                        bar.className = "flex-1 bg-teal-400/20 rounded-t transition-all duration-500";
+                        bar.style.height = Math.random() * 100 + "%";
+                        container.appendChild(bar);
+                    }
+                    
+                    const updateBars = () => {
+                        const bars = container.children;
+                        for(let bar of bars) {
+                            bar.style.height = Math.random() * 100 + "%";
+                            // Highlight high load
+                            const h = parseInt(bar.style.height);
+                            bar.className = `flex-1 rounded-t transition-all duration-500 ${h > 80 ? 'bg-teal-400' : 'bg-teal-400/20'}`;
+                        }
+                        document.getElementById('load-val').innerText = Math.floor(Math.random() * 30 + 30) + "%";
+                    };
+                    
+                    const id = setInterval(updateBars, 1000);
+                    App.state.intervals.push(id);
+                }
+            },
+
+            // --- LOGIC: AUDIT TOOL ---
+            runAudit(e) {
+                e.preventDefault();
+                const result = document.getElementById('auditResult');
+                const bar = document.getElementById('scoreBar');
+                const msg = document.getElementById('scoreMessage');
+                const val = parseInt(document.getElementById('q1').value);
+                
+                result.classList.remove('hidden');
+                
+                // Simulate calculation delay
                 setTimeout(() => {
-                    loader.classList.add('hidden-view');
-                    const appView = document.getElementById('app-view');
-                    appView.classList.remove('hidden-view');
-                    appView.classList.add('visible-view');
-                    startDashboardLogs();
-                }, 1500);
-            }, 500);
-        }
+                    const isSecure = val > 5;
+                    bar.style.width = isSecure ? '100%' : '35%';
+                    bar.className = `h-full transition-all duration-1000 ${isSecure ? 'bg-teal-400' : 'bg-red-500'}`;
+                    
+                    msg.innerHTML = isSecure 
+                        ? `<span class="text-green-400 font-bold">[PASS]</span> Architecture meets enterprise standards.` 
+                        : `<span class="text-red-400 font-bold">[FAIL]</span> Critical vulnerability detected in key management.`;
+                    
+                    document.getElementById('scoreText').innerText = isSecure ? "100/100" : "35/100";
+                    document.getElementById('scoreText').className = isSecure ? "text-teal-400" : "text-red-500";
+                }, 400);
+            },
 
-        function logoutSequence() {
-            location.reload(); 
-        }
+            // --- TYPEWRITER ---
+            startTypewriter() {
+                const el = document.getElementById('typewriter');
+                const txt = "AtHash";
+                let i = 0;
+                el.innerHTML = "";
+                const type = () => {
+                    if (i < txt.length) {
+                        el.innerHTML += txt.charAt(i);
+                        i++;
+                        setTimeout(type, 150);
+                    }
+                };
+                setTimeout(type, 500);
+            }
+        };
 
-        // 5. DASHBOARD LIVE LOGS
-        function startDashboardLogs() {
-            const logContainer = document.getElementById('dashboard-logs');
-            const logs = [
-                "Authorized handshake: 192.168.1.42",
-                "CV_Parser: Processing batch #402...",
-                "Azure_AD: User permission updated",
-                "Invoice_Bot: 14 PDFs sanitized",
-                "System: Garbage collection started",
-                "API: Rate limit check passed",
-                "Security: Zero-Trust verification success"
-            ];
-            let i = 0;
-            if (logInterval) clearInterval(logInterval);
-            
-            logInterval = setInterval(() => {
-                const div = document.createElement('div');
-                const time = new Date().toLocaleTimeString('en-US', {hour12: false});
-                div.className = "text-brand-grey border-l-2 border-brand-teal/20 pl-2 animate-pulse";
-                div.innerHTML = `<span class="opacity-50 mr-2 text-[10px]">[${time}]</span> ${logs[i % logs.length]}`;
-                logContainer.prepend(div);
-                if(logContainer.children.length > 20) logContainer.lastChild.remove();
-                i++;
-            }, 1800);
-        }
+        // --- INIT ---
+        window.addEventListener('DOMContentLoaded', () => {
+            App.canvas.init();
+            App.terminal.init();
+            App.startTypewriter();
+        });
+
     </script>
 </body>
 </html>
