@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AtHash Platform | Enterprise v2.0</title>
+    <title>AtHash Platform | Enterprise v3.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -18,8 +18,8 @@
                         slate: { 200: '#e6f1ff', 400: '#8892b0' }
                     },
                     fontFamily: { mono: ['"JetBrains Mono"', 'monospace'], sans: ['"Inter"', 'sans-serif'] },
-                    animation: { 'fade-in-up': 'fadeInUp 0.3s ease-out forwards' },
-                    keyframes: { fadeInUp: { '0%': { opacity: 0, transform: 'translateY(10px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } } }
+                    animation: { 'fade-in': 'fadeIn 0.3s ease-out forwards' },
+                    keyframes: { fadeIn: { '0%': { opacity: 0, transform: 'translateY(5px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } } }
                 }
             }
         }
@@ -27,24 +27,15 @@
 
     <style>
         body { background-color: #020c1b; color: #e6f1ff; overflow-x: hidden; }
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-thumb { background: #233554; border-radius: 3px; }
         ::-webkit-scrollbar-track { background: #020c1b; }
         
-        /* Glassmorphism & Utilities */
-        .glass-panel { background: rgba(17, 34, 64, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(100, 255, 218, 0.1); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); }
+        .glass-panel { background: rgba(17, 34, 64, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(100, 255, 218, 0.1); }
         .glass-modal { background: rgba(10, 25, 47, 0.95); backdrop-filter: blur(16px); border: 1px solid rgba(100, 255, 218, 0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .cmd-palette { background: #112240; border: 1px solid #64ffda; box-shadow: 0 0 40px rgba(100, 255, 218, 0.15); }
-        
-        /* Utilities */
         .hidden-force { display: none !important; }
-        .cursor-blink { animation: blink 1s step-end infinite; }
-        @keyframes blink { 50% { opacity: 0; } }
-        
-        /* Topology Node Animation */
-        .node-pulse { animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; }
-        @keyframes pulse-ring { 0% { transform: scale(0.8); opacity: 0.5; } 100% { transform: scale(2); opacity: 0; } }
+        .nav-active { background: rgba(100, 255, 218, 0.1); color: #64ffda !important; border-left: 2px solid #64ffda; }
+        .nav-item { border-left: 2px solid transparent; } /* Prevent layout shift on hover */
     </style>
 </head>
 <body class="font-sans antialiased selection:bg-teal-400/30 selection:text-teal-400">
@@ -53,149 +44,71 @@
     
     <div id="toast-container" class="fixed bottom-6 right-6 z-[100] flex flex-col gap-3 pointer-events-none"></div>
 
-    <div id="cmd-overlay" class="hidden-force fixed inset-0 z-[200] bg-navy-950/80 backdrop-blur-sm flex items-start justify-center pt-[20vh]" onclick="App.cmd.toggle()">
-        <div class="cmd-palette w-full max-w-xl rounded-lg overflow-hidden flex flex-col animate-fade-in-up" onclick="event.stopPropagation()">
-            <div class="flex items-center px-4 border-b border-teal-400/20">
-                <i class="ph ph-magnifying-glass text-slate-400 text-lg"></i>
-                <input type="text" id="cmd-input" placeholder="Type a command or search..." class="w-full bg-transparent border-none text-slate-200 p-4 focus:ring-0 focus:outline-none font-mono text-sm">
-                <span class="text-xs text-slate-500 font-mono border border-slate-500/30 rounded px-1.5 py-0.5">ESC</span>
-            </div>
-            <div class="py-2" id="cmd-list">
-                </div>
-            <div class="bg-navy-950 px-4 py-2 text-[10px] text-slate-500 font-mono border-t border-teal-400/10 flex justify-between">
-                <span>AtHash_OS v2.1.0</span>
-                <span>PRO_MODE</span>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-settings" class="hidden-force fixed inset-0 z-[150] bg-navy-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="glass-modal w-full max-w-2xl rounded-xl p-6 relative animate-fade-in-up">
-            <button onclick="App.ui.toggleModal('modal-settings')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="ph ph-x text-lg"></i></button>
-            
-            <h2 class="text-xl font-bold text-slate-200 mb-1 flex items-center gap-2"><i class="ph ph-key text-teal-400"></i> API Configuration</h2>
-            <p class="text-sm text-slate-400 mb-6">Manage secure access tokens for your automation pipelines.</p>
-            
-            <div class="space-y-4">
-                <div class="bg-navy-950 rounded border border-slate-700/50 p-4 flex items-center justify-between">
-                    <div>
-                        <div class="text-xs font-mono text-slate-500 uppercase">Production Key</div>
-                        <div class="font-mono text-slate-200 text-sm mt-1">ah_live_****************8x92</div>
-                    </div>
-                    <div class="flex gap-2">
-                        <button class="text-xs border border-slate-600 rounded px-3 py-1.5 text-slate-400 hover:text-white hover:border-slate-400" onclick="App.toast.show('Key copied to clipboard')">Copy</button>
-                        <button class="text-xs border border-red-900/50 bg-red-900/10 rounded px-3 py-1.5 text-red-400 hover:bg-red-900/30">Revoke</button>
-                    </div>
-                </div>
-
-                <div class="border-t border-slate-700/50 pt-4">
-                    <label class="block text-sm text-slate-300 mb-2">Create New Token</label>
-                    <div class="flex gap-2">
-                        <input type="text" placeholder="Token Name (e.g. CI/CD Runner)" class="flex-1 bg-navy-900 border border-slate-600 rounded px-3 py-2 text-sm text-white focus:border-teal-400 focus:outline-none">
-                        <button class="bg-teal-400/10 text-teal-400 border border-teal-400 rounded px-4 py-2 text-sm font-bold hover:bg-teal-400 hover:text-navy-900 transition-colors" onclick="App.toast.show('New token generated successfully', 'success')">Generate</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <div id="view-public" class="transition-opacity duration-500">
+    <div id="view-public" class="relative z-10 transition-opacity duration-500">
         <nav class="fixed top-0 w-full z-50 glass-panel border-b-0 border-b-teal-400/10">
             <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
                 <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 bg-navy-800 rounded border border-teal-400/20 flex items-center justify-center text-teal-400">
-                        <i class="ph ph-shield-check text-xl"></i>
-                    </div>
+                    <div class="w-9 h-9 bg-navy-800 rounded border border-teal-400/20 flex items-center justify-center text-teal-400"><i class="ph ph-shield-check text-xl"></i></div>
                     <span class="font-mono font-bold text-lg text-slate-200">AtHash<span class="text-teal-400">_inc</span></span>
                 </div>
-                <div class="hidden md:flex items-center gap-6 font-mono text-sm">
-                    <span class="text-slate-500 text-xs mr-4 hidden lg:inline-block">Press <kbd class="border border-slate-600 rounded px-1 text-slate-300">Cmd</kbd> + <kbd class="border border-slate-600 rounded px-1 text-slate-300">K</kbd></span>
-                    <button onclick="App.auth.login()" class="px-5 py-2 border border-teal-400 text-teal-400 rounded hover:bg-teal-400 hover:text-navy-900 transition-all font-bold">LOGIN</button>
-                </div>
+                <button onclick="App.auth.login()" class="px-5 py-2 border border-teal-400 text-teal-400 rounded hover:bg-teal-400 hover:text-navy-900 transition-all font-bold font-mono text-sm">LOGIN</button>
             </div>
         </nav>
-
-        <main class="pt-32 pb-20 px-6 max-w-7xl mx-auto min-h-screen flex items-center">
-            <div class="grid lg:grid-cols-2 gap-16 items-center">
-                <div class="space-y-8">
-                    <div class="inline-flex items-center gap-2 text-teal-400 font-mono text-xs tracking-widest bg-teal-900/30 px-3 py-1 rounded border border-teal-400/20">
-                        <span class="w-2 h-2 bg-teal-400 rounded-full animate-pulse"></span> SYSTEM_ONLINE
-                    </div>
-                    <h1 class="text-6xl font-bold text-slate-200 leading-tight">
-                        <span id="hero-typewriter"></span><span class="cursor-blink text-teal-400">_</span>
-                    </h1>
-                    <p class="text-slate-400 text-lg max-w-lg leading-relaxed">
-                        Enterprise-grade automation infrastructure. We bridge the gap between rapid deployment and zero-trust security.
-                    </p>
-                    <div class="flex gap-4">
-                        <button onclick="App.auth.login()" class="bg-teal-400 text-navy-900 px-8 py-4 rounded font-bold font-mono hover:bg-white transition-all">ACCESS_PORTAL</button>
-                        <button class="border border-slate-600 text-slate-400 px-8 py-4 rounded font-mono hover:border-teal-400 hover:text-teal-400 transition-all">READ_DOCS</button>
-                    </div>
-                </div>
-                
-                <div class="hidden lg:block glass-panel rounded-xl overflow-hidden transform rotate-1 hover:rotate-0 transition-transform duration-500">
-                    <div class="bg-navy-950 px-4 py-2 border-b border-teal-400/10 flex gap-2">
-                        <div class="w-3 h-3 rounded-full bg-red-500/50"></div>
-                        <div class="w-3 h-3 rounded-full bg-yellow-500/50"></div>
-                        <div class="w-3 h-3 rounded-full bg-green-500/50"></div>
-                    </div>
-                    <div class="p-6 font-mono text-xs leading-relaxed opacity-80">
-                        <div class="text-slate-500">// AtHash Secure Core Initialization</div>
-                        <div class="text-purple-400">import</div> <div class="text-white inline">SecurityProtocol</div> <div class="text-purple-400 inline">from</div> <div class="text-green-400 inline">'@athash/core'</div>;
-                        <br><br>
-                        <div class="text-blue-400">class</div> <div class="text-yellow-400 inline">Automator</div> {
-                        <br>
-                        &nbsp;&nbsp;<div class="text-blue-400 inline">async</div> <div class="text-yellow-400 inline">init</div>() {
-                        <br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;<div class="text-slate-500 inline">/* Verify Identity */</div>
-                        <br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;<div class="text-purple-400 inline">await</div> SecurityProtocol.<div class="text-blue-300 inline">handshake</div>(KEYS.private);
-                        <br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;<div class="text-purple-400 inline">return</div> <div class="text-green-400 inline">true</div>;
-                        <br>
-                        &nbsp;&nbsp;}
-                        <br>}
-                    </div>
-                </div>
+        <main class="h-screen flex items-center justify-center px-6">
+            <div class="text-center space-y-6">
+                <h1 class="text-5xl md:text-7xl font-bold text-slate-200">AtHash<span class="text-teal-400">_OS</span></h1>
+                <p class="text-slate-400">Secure Automation Infrastructure</p>
+                <button onclick="App.auth.login()" class="bg-teal-400 text-navy-900 px-8 py-3 rounded font-bold font-mono hover:bg-white transition-all">ENTER_SYSTEM</button>
             </div>
         </main>
     </div>
 
-
     <div id="view-dashboard" class="hidden-force fixed inset-0 z-10 bg-navy-900 flex">
         
-        <aside class="w-64 bg-navy-950 border-r border-teal-400/10 flex flex-col">
+        <aside class="w-64 bg-navy-950 border-r border-teal-400/10 flex flex-col z-20">
             <div class="h-16 flex items-center px-6 gap-3 border-b border-teal-400/10">
                 <div class="w-6 h-6 bg-teal-400 rounded flex items-center justify-center text-navy-900 font-bold text-xs">AH</div>
                 <span class="font-mono font-bold text-slate-200">AtHash<span class="text-teal-400">_OS</span></span>
             </div>
             
-            <div class="p-4">
-                <div class="text-[10px] font-mono text-slate-500 uppercase tracking-wider mb-2">Workspaces</div>
-                <div class="flex items-center gap-2 text-sm text-white bg-navy-800 p-2 rounded border border-teal-400/20 cursor-pointer">
-                    <span class="w-2 h-2 rounded-full bg-green-400"></span> Production
+            <div class="p-4 relative">
+                <div class="text-[10px] font-mono text-slate-500 uppercase tracking-wider mb-2">Workspace</div>
+                <button onclick="App.workspaces.toggle()" id="ws-trigger" class="w-full flex items-center gap-2 text-sm text-white bg-navy-800 p-2 rounded border border-teal-400/20 hover:border-teal-400 transition-colors">
+                    <span id="ws-dot" class="w-2 h-2 rounded-full bg-green-400 shadow-[0_0_8px_#4ade80]"></span> 
+                    <span id="ws-label">Production</span>
                     <i class="ph ph-caret-down ml-auto text-slate-500"></i>
+                </button>
+
+                <div id="ws-dropdown" class="hidden-force absolute top-full left-4 right-4 mt-2 bg-navy-800 border border-slate-700 rounded shadow-2xl z-50 overflow-hidden animate-fade-in">
+                    <div onclick="App.workspaces.select('Production', 'green')" class="px-3 py-2 hover:bg-navy-700 cursor-pointer flex items-center gap-2 text-sm text-slate-300">
+                        <span class="w-2 h-2 rounded-full bg-green-400"></span> Production
+                    </div>
+                    <div onclick="App.workspaces.select('Staging', 'yellow')" class="px-3 py-2 hover:bg-navy-700 cursor-pointer flex items-center gap-2 text-sm text-slate-300">
+                        <span class="w-2 h-2 rounded-full bg-yellow-400"></span> Staging
+                    </div>
+                    <div onclick="App.workspaces.select('Dev', 'gray')" class="px-3 py-2 hover:bg-navy-700 cursor-pointer flex items-center gap-2 text-sm text-slate-300">
+                        <span class="w-2 h-2 rounded-full bg-slate-400"></span> Dev
+                    </div>
                 </div>
             </div>
 
-            <nav class="flex-1 px-4 space-y-1">
-                <a href="#" class="flex items-center gap-3 px-3 py-2 text-teal-400 bg-teal-400/10 rounded border border-teal-400/20 text-sm font-medium">
+            <nav class="flex-1 px-4 space-y-1 mt-2">
+                <button onclick="App.router.go('overview')" id="nav-overview" class="nav-item w-full flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-navy-800 rounded transition-colors text-sm">
                     <i class="ph ph-graph"></i> Overview
-                </a>
-                <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-navy-800 rounded transition-colors text-sm">
+                </button>
+                <button onclick="App.router.go('pipelines')" id="nav-pipelines" class="nav-item w-full flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-navy-800 rounded transition-colors text-sm">
                     <i class="ph ph-git-merge"></i> Pipelines
-                </a>
-                <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-navy-800 rounded transition-colors text-sm">
+                </button>
+                <button onclick="App.router.go('vault')" id="nav-vault" class="nav-item w-full flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-navy-800 rounded transition-colors text-sm">
                     <i class="ph ph-lock-key"></i> Vault
-                </a>
-                <a href="#" onclick="App.ui.toggleModal('modal-settings')" class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-navy-800 rounded transition-colors text-sm">
+                </button>
+                <button onclick="App.router.go('settings')" id="nav-settings" class="nav-item w-full flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-navy-800 rounded transition-colors text-sm">
                     <i class="ph ph-gear"></i> Settings
-                </a>
+                </button>
             </nav>
 
             <div class="p-4 border-t border-teal-400/10">
-                <button onclick="App.auth.logout()" class="flex items-center gap-2 text-xs text-slate-500 hover:text-red-400 transition-colors">
+                <button onclick="App.auth.logout()" class="flex items-center gap-2 text-xs text-slate-500 hover:text-red-400 transition-colors w-full">
                     <i class="ph ph-sign-out"></i> Sign Out
                 </button>
             </div>
@@ -204,64 +117,120 @@
         <main class="flex-1 flex flex-col overflow-hidden relative">
             
             <header class="h-16 bg-navy-900/80 backdrop-blur border-b border-teal-400/10 flex items-center justify-between px-6 z-20">
-                <div class="flex items-center gap-4 text-sm text-slate-400">
-                    <span>Dashboards</span> <span class="text-slate-600">/</span> <span class="text-white">Network Topology</span>
+                <div class="font-mono text-sm text-slate-400">
+                    root <span class="text-teal-400">/</span> <span id="page-title" class="text-white">overview</span>
                 </div>
-                <div class="flex gap-3">
-                    <button class="w-8 h-8 rounded-full bg-navy-800 flex items-center justify-center text-slate-400 hover:text-white border border-slate-700 hover:border-teal-400 transition-colors" onclick="App.cmd.toggle()">
-                        <i class="ph ph-magnifying-glass"></i>
-                    </button>
-                    <button class="w-8 h-8 rounded-full bg-navy-800 flex items-center justify-center text-slate-400 hover:text-white border border-slate-700 relative">
-                        <i class="ph ph-bell"></i>
-                        <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-navy-900"></span>
-                    </button>
+                <div class="flex items-center gap-3">
+                    <span class="px-2 py-1 bg-navy-800 rounded border border-slate-700 text-[10px] text-slate-400 font-mono">v3.0.1</span>
+                    <button class="w-8 h-8 rounded-full bg-navy-800 flex items-center justify-center text-slate-400 border border-slate-700"><i class="ph ph-bell"></i></button>
                 </div>
             </header>
 
             <div class="flex-1 overflow-y-auto p-6 scroll-smooth z-10 relative">
-                
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-                    <div class="glass-panel p-5 rounded-lg">
-                        <div class="text-xs text-slate-400 font-mono uppercase">Total Requests</div>
-                        <div class="text-2xl font-bold text-white mt-1">2.4M</div>
-                        <div class="text-[10px] text-green-400 mt-1">↑ 12% vs last week</div>
+
+                <div id="page-overview" class="page-section animate-fade-in">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div class="glass-panel p-5 rounded-lg">
+                            <div class="text-xs text-slate-400 font-mono uppercase">System Load</div>
+                            <div class="text-2xl font-bold text-white mt-1">42%</div>
+                            <div class="h-1 w-full bg-navy-800 mt-2 rounded-full overflow-hidden"><div class="h-full bg-teal-400 w-[42%]"></div></div>
+                        </div>
+                        <div class="glass-panel p-5 rounded-lg">
+                            <div class="text-xs text-slate-400 font-mono uppercase">Active Nodes</div>
+                            <div class="text-2xl font-bold text-white mt-1">12/12</div>
+                            <div class="text-[10px] text-green-400 mt-1">All Systems Operational</div>
+                        </div>
+                        <div class="glass-panel p-5 rounded-lg border-l-2 border-orange-500">
+                            <div class="text-xs text-slate-400 font-mono uppercase">Security Alerts</div>
+                            <div class="text-2xl font-bold text-white mt-1">0</div>
+                            <div class="text-[10px] text-slate-500 mt-1">Zero Trust Enforced</div>
+                        </div>
                     </div>
-                    <div class="glass-panel p-5 rounded-lg">
-                        <div class="text-xs text-slate-400 font-mono uppercase">Avg Latency</div>
-                        <div class="text-2xl font-bold text-white mt-1">42ms</div>
-                        <div class="text-[10px] text-teal-400 mt-1">Optimal Range</div>
-                    </div>
-                    <div class="glass-panel p-5 rounded-lg">
-                        <div class="text-xs text-slate-400 font-mono uppercase">Security Score</div>
-                        <div class="text-2xl font-bold text-teal-400 mt-1">98/100</div>
-                        <div class="text-[10px] text-slate-500 mt-1">Zero critical flags</div>
-                    </div>
-                    <div class="glass-panel p-5 rounded-lg border-l-2 border-orange-500">
-                        <div class="text-xs text-slate-400 font-mono uppercase">Active Incidents</div>
-                        <div class="text-2xl font-bold text-white mt-1">0</div>
-                        <div class="text-[10px] text-slate-500 mt-1">System healthy</div>
+                    <div class="glass-panel rounded-lg h-[400px] relative flex flex-col">
+                        <div class="p-4 border-b border-teal-400/10 flex justify-between">
+                            <h3 class="font-bold text-slate-200 text-sm">Network Topology</h3>
+                            <button onclick="App.topology.reset()" class="text-xs text-teal-400 hover:text-white"><i class="ph ph-arrows-clockwise"></i> Reset</button>
+                        </div>
+                        <canvas id="topology-canvas" class="flex-1 w-full cursor-crosshair opacity-80"></canvas>
                     </div>
                 </div>
 
-                <div class="grid lg:grid-cols-3 gap-6 h-[500px]">
-                    <div class="lg:col-span-2 glass-panel rounded-lg p-1 flex flex-col relative overflow-hidden group">
-                        <div class="absolute top-4 left-4 z-10">
-                            <h3 class="text-sm font-bold text-slate-200">Live Architecture</h3>
-                            <div class="text-[10px] text-slate-500">Real-time node status</div>
-                        </div>
-                        <canvas id="topology-canvas" class="w-full h-full cursor-crosshair opacity-80 group-hover:opacity-100 transition-opacity"></canvas>
-                        <div class="absolute bottom-4 right-4 flex gap-2">
-                            <button class="bg-navy-800 p-2 rounded text-slate-400 hover:text-white border border-slate-700" onclick="App.topology.reset()"><i class="ph ph-arrows-clockwise"></i></button>
-                        </div>
+                <div id="page-pipelines" class="page-section hidden-force animate-fade-in">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold text-white">CI/CD Pipelines</h2>
+                        <button onclick="App.pipelines.triggerNew()" class="px-4 py-2 bg-teal-400 text-navy-900 text-sm font-bold rounded hover:bg-white transition-colors flex items-center gap-2">
+                            <i class="ph ph-play"></i> Run Pipeline
+                        </button>
                     </div>
 
-                    <div class="glass-panel rounded-lg p-0 flex flex-col">
-                        <div class="p-4 border-b border-teal-400/10 flex justify-between items-center">
-                            <h3 class="text-sm font-bold text-slate-200">Audit Log</h3>
-                            <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                    <div class="glass-panel rounded-lg overflow-hidden">
+                        <table class="w-full text-left text-sm text-slate-400">
+                            <thead class="bg-navy-800 text-slate-200 font-mono text-xs uppercase">
+                                <tr>
+                                    <th class="px-6 py-3">Status</th>
+                                    <th class="px-6 py-3">Pipeline Name</th>
+                                    <th class="px-6 py-3">Commit</th>
+                                    <th class="px-6 py-3">Duration</th>
+                                    <th class="px-6 py-3 text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-teal-400/10" id="pipeline-list">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="page-vault" class="page-section hidden-force animate-fade-in">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold text-white">Data Vault</h2>
+                        <button class="px-4 py-2 border border-slate-600 text-slate-300 text-sm font-bold rounded hover:border-teal-400 hover:text-teal-400 transition-colors flex items-center gap-2">
+                            <i class="ph ph-plus"></i> Add Secret
+                        </button>
+                    </div>
+
+                    <div class="grid gap-4" id="vault-grid">
                         </div>
-                        <div id="activity-feed" class="flex-1 overflow-y-auto p-4 space-y-4 text-xs font-mono">
+                </div>
+
+                <div id="page-settings" class="page-section hidden-force animate-fade-in">
+                    <h2 class="text-xl font-bold text-white mb-6">Platform Settings</h2>
+                    
+                    <div class="max-w-2xl space-y-6">
+                        <div class="glass-panel p-6 rounded-lg">
+                            <h3 class="text-lg font-bold text-slate-200 mb-4 border-b border-teal-400/10 pb-2">Organization Profile</h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-mono text-slate-500 mb-1">Company Name</label>
+                                    <input type="text" value="AtHash Corp" class="w-full bg-navy-900 border border-slate-700 rounded p-2 text-white text-sm focus:border-teal-400 outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-mono text-slate-500 mb-1">Admin Email</label>
+                                    <input type="text" value="admin@athash.tech" class="w-full bg-navy-900 border border-slate-700 rounded p-2 text-slate-400 text-sm focus:border-teal-400 outline-none" disabled>
+                                </div>
                             </div>
+                        </div>
+
+                        <div class="glass-panel p-6 rounded-lg">
+                            <h3 class="text-lg font-bold text-slate-200 mb-4 border-b border-teal-400/10 pb-2">Security Policy</h3>
+                            <div class="flex items-center justify-between py-2">
+                                <div>
+                                    <div class="text-sm text-white">Enforce 2FA</div>
+                                    <div class="text-xs text-slate-500">Require two-factor auth for all team members</div>
+                                </div>
+                                <div onclick="this.classList.toggle('bg-teal-400'); this.classList.toggle('bg-slate-700')" class="w-10 h-5 bg-teal-400 rounded-full cursor-pointer relative transition-colors">
+                                    <div class="w-3 h-3 bg-white rounded-full absolute top-1 right-1 shadow"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between py-2 border-t border-teal-400/10 mt-2 pt-2">
+                                <div>
+                                    <div class="text-sm text-white">IP Whitelisting</div>
+                                    <div class="text-xs text-slate-500">Only allow access from corporate VPN</div>
+                                </div>
+                                <div onclick="this.classList.toggle('bg-teal-400'); this.classList.toggle('bg-slate-700')" class="w-10 h-5 bg-slate-700 rounded-full cursor-pointer relative transition-colors">
+                                    <div class="w-3 h-3 bg-white rounded-full absolute top-1 left-1 shadow"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -272,278 +241,258 @@
     <script>
         const App = {
             state: {
-                isLoggedIn: false
+                workspace: { name: 'Production', color: 'green' },
+                currentPage: 'overview'
             },
 
             init() {
-                this.bgCanvas.init();
-                this.typewriter.init();
-                this.cmd.initListeners();
+                App.bgCanvas.init();
                 
-                // Check local storage for session
-                if(localStorage.getItem('athash_session') === 'true') {
-                    this.auth.restoreSession();
-                }
+                // Initialize Mock Data
+                App.pipelines.render();
+                App.vault.render();
+                
+                // Initial Route
+                App.router.go('overview');
             },
 
-            // --- Authentication Logic ---
+            // --- Authentication ---
             auth: {
                 login() {
-                    // Simulate API Call
-                    App.toast.show("Authenticating with SSO...", "info");
-                    document.body.style.cursor = "wait";
-                    
+                    document.body.style.cursor = 'wait';
+                    App.toast.show("Handshake initiated...", "info");
                     setTimeout(() => {
-                        App.state.isLoggedIn = true;
-                        localStorage.setItem('athash_session', 'true');
-                        
                         document.getElementById('view-public').classList.add('hidden-force');
                         document.getElementById('view-dashboard').classList.remove('hidden-force');
-                        document.body.style.cursor = "default";
-                        
+                        document.body.style.cursor = 'default';
                         App.topology.init();
-                        App.feed.init();
-                        App.toast.show("Welcome back, Administrator.", "success");
-                    }, 1500);
+                        App.toast.show("Authorized. Welcome back.", "success");
+                    }, 1000);
                 },
                 logout() {
-                    App.state.isLoggedIn = false;
-                    localStorage.removeItem('athash_session');
                     location.reload();
-                },
-                restoreSession() {
-                    document.getElementById('view-public').classList.add('hidden-force');
-                    document.getElementById('view-dashboard').classList.remove('hidden-force');
-                    setTimeout(() => {
-                        App.topology.init();
-                        App.feed.init();
-                    }, 100);
                 }
             },
 
-            // --- UI Managers ---
-            ui: {
-                toggleModal(id) {
-                    const el = document.getElementById(id);
-                    el.classList.toggle('hidden-force');
+            // --- Router / Navigation ---
+            router: {
+                go(pageId) {
+                    // Update State
+                    App.state.currentPage = pageId;
+                    
+                    // Update Header Title
+                    document.getElementById('page-title').innerText = pageId;
+
+                    // Update Sidebar Active State
+                    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('nav-active'));
+                    const activeNav = document.getElementById(`nav-${pageId}`);
+                    if(activeNav) activeNav.classList.add('nav-active');
+
+                    // Show/Hide Pages
+                    document.querySelectorAll('.page-section').forEach(el => el.classList.add('hidden-force'));
+                    const activePage = document.getElementById(`page-${pageId}`);
+                    if(activePage) activePage.classList.remove('hidden-force');
                 }
             },
 
-            // --- Command Palette ---
-            cmd: {
-                isOpen: false,
-                commands: [
-                    { label: "Go to Dashboard", icon: "ph-squares-four", action: () => App.auth.login() },
-                    { label: "Generate API Key", icon: "ph-key", action: () => App.ui.toggleModal('modal-settings') },
-                    { label: "Run Security Scan", icon: "ph-shield-check", action: () => App.toast.show("Scan initiated in background...", "success") },
-                    { label: "View Documentation", icon: "ph-book", action: () => window.open('#', '_blank') },
-                    { label: "Log Out", icon: "ph-sign-out", action: () => App.auth.logout() }
-                ],
-                
-                initListeners() {
-                    document.addEventListener('keydown', (e) => {
-                        if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-                            e.preventDefault();
-                            this.toggle();
-                        }
-                        if (e.key === 'Escape' && this.isOpen) {
-                            this.toggle();
-                        }
-                    });
-
-                    // Render list
-                    const list = document.getElementById('cmd-list');
-                    this.commands.forEach(cmd => {
-                        const div = document.createElement('div');
-                        div.className = "px-4 py-3 flex items-center gap-3 text-slate-300 hover:bg-teal-400/10 hover:text-teal-400 cursor-pointer transition-colors";
-                        div.innerHTML = `<i class="ph ${cmd.icon} text-lg"></i> <span class="text-sm">${cmd.label}</span>`;
-                        div.onclick = () => { cmd.action(); this.toggle(); };
-                        list.appendChild(div);
-                    });
-                },
-                
+            // --- Workspace Logic ---
+            workspaces: {
                 toggle() {
-                    this.isOpen = !this.isOpen;
-                    const el = document.getElementById('cmd-overlay');
-                    if (this.isOpen) {
-                        el.classList.remove('hidden-force');
-                        document.getElementById('cmd-input').focus();
-                    } else {
-                        el.classList.add('hidden-force');
-                    }
+                    const dd = document.getElementById('ws-dropdown');
+                    dd.classList.toggle('hidden-force');
+                },
+                select(name, color) {
+                    App.state.workspace = { name, color };
+                    
+                    // Update UI Label
+                    document.getElementById('ws-label').innerText = name;
+                    
+                    // Update UI Dot Color
+                    const dot = document.getElementById('ws-dot');
+                    const colors = {
+                        green: ['bg-green-400', 'shadow-[0_0_8px_#4ade80]'],
+                        yellow: ['bg-yellow-400', 'shadow-[0_0_8px_#facc15]'],
+                        gray: ['bg-slate-400', 'shadow-none']
+                    };
+                    
+                    // Reset classes
+                    dot.className = "w-2 h-2 rounded-full transition-colors duration-300";
+                    dot.classList.add(...colors[color]);
+
+                    // Close Dropdown
+                    document.getElementById('ws-dropdown').classList.add('hidden-force');
+                    
+                    App.toast.show(`Switched to ${name} Environment`, "success");
                 }
             },
 
-            // --- Toast Notifications ---
-            toast: {
-                show(message, type = 'info') {
-                    const container = document.getElementById('toast-container');
-                    const el = document.createElement('div');
-                    
-                    const colors = type === 'success' ? 'border-green-500 text-green-400' : 'border-teal-400 text-teal-400';
-                    const icon = type === 'success' ? 'ph-check-circle' : 'ph-info';
-                    
-                    el.className = `glass-panel px-4 py-3 rounded flex items-center gap-3 border-l-4 ${colors} min-w-[300px] animate-fade-in-up pointer-events-auto`;
-                    el.innerHTML = `<i class="ph ${icon} text-lg"></i> <span class="text-sm text-slate-200">${message}</span>`;
-                    
-                    container.appendChild(el);
-                    setTimeout(() => el.remove(), 4000);
+            // --- Pipelines Logic ---
+            pipelines: {
+                data: [
+                    { status: 'running', name: 'api-gateway-deploy', commit: '8f2a1d', time: '1m 20s' },
+                    { status: 'success', name: 'frontend-build', commit: '90c2e1', time: '4m 12s' },
+                    { status: 'failed', name: 'db-migration', commit: 'a1b2c3', time: '0m 45s' },
+                    { status: 'success', name: 'security-scan', commit: 'd4e5f6', time: '2m 10s' }
+                ],
+                render() {
+                    const tbody = document.getElementById('pipeline-list');
+                    tbody.innerHTML = this.data.map(item => `
+                        <tr class="hover:bg-teal-400/5 transition-colors group">
+                            <td class="px-6 py-4">
+                                ${this.getStatusBadge(item.status)}
+                            </td>
+                            <td class="px-6 py-4 font-bold text-slate-200">${item.name}</td>
+                            <td class="px-6 py-4 font-mono text-xs"><span class="bg-navy-700 px-2 py-1 rounded text-teal-400">#${item.commit}</span></td>
+                            <td class="px-6 py-4 font-mono text-xs">${item.time}</td>
+                            <td class="px-6 py-4 text-right">
+                                <button class="text-slate-500 hover:text-white group-hover:visible invisible" onclick="App.pipelines.rerun('${item.name}')"><i class="ph ph-arrow-clockwise"></i></button>
+                            </td>
+                        </tr>
+                    `).join('');
+                },
+                getStatusBadge(status) {
+                    if(status === 'running') return `<span class="inline-flex items-center gap-2 px-2 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-mono border border-blue-500/20"><span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span> RUNNING</span>`;
+                    if(status === 'success') return `<span class="inline-flex items-center gap-2 px-2 py-1 rounded-full bg-green-500/10 text-green-400 text-xs font-mono border border-green-500/20"><i class="ph ph-check"></i> PASS</span>`;
+                    return `<span class="inline-flex items-center gap-2 px-2 py-1 rounded-full bg-red-500/10 text-red-400 text-xs font-mono border border-red-500/20"><i class="ph ph-x"></i> FAIL</span>`;
+                },
+                triggerNew() {
+                    App.toast.show('Triggering manual workflow...', 'info');
+                    setTimeout(() => {
+                        this.data.unshift({ status: 'running', name: 'manual-trigger', commit: 'head', time: '0s' });
+                        this.render();
+                    }, 1000);
+                },
+                rerun(name) {
+                    App.toast.show(`Re-running ${name}...`, 'info');
                 }
             },
 
-            // --- Data Visual: Topology Graph ---
+            // --- Vault Logic ---
+            vault: {
+                data: [
+                    { key: 'STRIPE_SECRET_KEY', val: 'sk_live_51J...', env: 'Production' },
+                    { key: 'AWS_ACCESS_KEY_ID', val: 'AKIAIOSFOD...', env: 'Global' },
+                    { key: 'DATABASE_URL', val: 'postgres://u:p@...', env: 'Staging' }
+                ],
+                render() {
+                    const grid = document.getElementById('vault-grid');
+                    grid.innerHTML = this.data.map(item => `
+                        <div class="glass-panel p-4 rounded flex items-center justify-between group">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded bg-navy-800 flex items-center justify-center border border-teal-400/20 text-teal-400">
+                                    <i class="ph ph-key"></i>
+                                </div>
+                                <div>
+                                    <div class="font-mono text-sm text-slate-200 font-bold">${item.key}</div>
+                                    <div class="text-xs text-slate-500 flex items-center gap-2">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span> ${item.env}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="hidden md:block font-mono text-xs text-slate-600 bg-navy-950 px-3 py-1.5 rounded border border-slate-800 select-all">
+                                    ${item.val}****************
+                                </div>
+                                <button onclick="App.vault.copy()" class="p-2 hover:bg-teal-400/10 text-slate-400 hover:text-teal-400 rounded transition-colors" title="Copy">
+                                    <i class="ph ph-copy"></i>
+                                </button>
+                                <button class="p-2 hover:bg-teal-400/10 text-slate-400 hover:text-teal-400 rounded transition-colors" title="Reveal">
+                                    <i class="ph ph-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                },
+                copy() {
+                    App.toast.show('Secret copied to clipboard', 'success');
+                }
+            },
+
+            // --- Topology ---
             topology: {
                 init() {
                     const canvas = document.getElementById('topology-canvas');
                     if(!canvas) return;
                     const ctx = canvas.getContext('2d');
                     
-                    // Set Size
-                    const rect = canvas.parentElement.getBoundingClientRect();
-                    canvas.width = rect.width;
-                    canvas.height = rect.height;
+                    // Resize to Parent
+                    const parent = canvas.parentElement;
+                    canvas.width = parent.clientWidth;
+                    canvas.height = parent.clientHeight;
 
-                    // Mock Nodes
                     const nodes = [
-                        { x: canvas.width/2, y: canvas.height/2, r: 20, color: '#64ffda', label: 'Core' },
-                        { x: canvas.width/2 - 100, y: canvas.height/2 - 50, r: 10, color: '#8892b0', label: 'Auth' },
-                        { x: canvas.width/2 + 100, y: canvas.height/2 - 50, r: 10, color: '#8892b0', label: 'DB' },
-                        { x: canvas.width/2, y: canvas.height/2 + 100, r: 10, color: '#8892b0', label: 'API' },
-                        { x: canvas.width/2 - 80, y: canvas.height/2 + 80, r: 8, color: '#233554', label: 'Worker' },
-                        { x: canvas.width/2 + 80, y: canvas.height/2 + 80, r: 8, color: '#233554', label: 'Worker' }
+                        {x: canvas.width/2, y: canvas.height/2, r: 15, c: '#64ffda'}, // Core
+                        {x: canvas.width/2 - 100, y: canvas.height/2 - 60, r: 8, c: '#8892b0'},
+                        {x: canvas.width/2 + 100, y: canvas.height/2 - 60, r: 8, c: '#8892b0'},
+                        {x: canvas.width/2 - 50, y: canvas.height/2 + 80, r: 8, c: '#8892b0'},
+                        {x: canvas.width/2 + 50, y: canvas.height/2 + 80, r: 8, c: '#8892b0'}
                     ];
-
-                    function draw() {
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        
-                        // Draw Connections
-                        ctx.strokeStyle = 'rgba(100, 255, 218, 0.2)';
-                        ctx.lineWidth = 1;
-                        ctx.beginPath();
-                        nodes.forEach((node, i) => {
-                            if (i === 0) return; // Core connects to everything
-                            ctx.moveTo(nodes[0].x, nodes[0].y);
-                            ctx.lineTo(node.x, node.y);
-                        });
-                        ctx.stroke();
-
-                        // Draw Nodes
-                        nodes.forEach(node => {
-                            // Glow
-                            ctx.shadowBlur = 15;
-                            ctx.shadowColor = node.color;
-                            
-                            ctx.fillStyle = node.color;
-                            ctx.beginPath();
-                            ctx.arc(node.x, node.y, node.r, 0, Math.PI * 2);
-                            ctx.fill();
-                            
-                            // Reset shadow
-                            ctx.shadowBlur = 0;
-                            
-                            // Label
-                            ctx.fillStyle = '#fff';
-                            ctx.font = '10px JetBrains Mono';
-                            ctx.textAlign = 'center';
-                            ctx.fillText(node.label, node.x, node.y + node.r + 15);
-                        });
-                        
-                        // Slight movement
-                        nodes.forEach((node, i) => {
-                            if(i===0) return; // Anchor core
-                            node.y += Math.sin(Date.now() / 1000 + i) * 0.2;
-                        });
-
-                        requestAnimationFrame(draw);
-                    }
-                    draw();
-                },
-                reset() { this.init(); App.toast.show('Topology visualization reset'); }
-            },
-
-            // --- Background Animation ---
-            bgCanvas: {
-                init() {
-                    const canvas = document.getElementById('bg-canvas');
-                    const ctx = canvas.getContext('2d');
-                    canvas.width = window.innerWidth;
-                    canvas.height = window.innerHeight;
-                    
-                    const stars = Array(100).fill().map(() => ({
-                        x: Math.random() * canvas.width,
-                        y: Math.random() * canvas.height,
-                        s: Math.random() * 2,
-                        a: Math.random()
-                    }));
 
                     function animate() {
                         ctx.clearRect(0,0,canvas.width,canvas.height);
-                        ctx.fillStyle = '#64ffda';
-                        stars.forEach(star => {
-                            ctx.globalAlpha = star.a;
+                        
+                        // Links
+                        ctx.beginPath();
+                        ctx.strokeStyle = 'rgba(100, 255, 218, 0.2)';
+                        nodes.slice(1).forEach(n => {
+                            ctx.moveTo(nodes[0].x, nodes[0].y);
+                            ctx.lineTo(n.x, n.y);
+                        });
+                        ctx.stroke();
+
+                        // Nodes
+                        nodes.forEach((n, i) => {
+                            if(i > 0) n.y += Math.sin(Date.now()/1000 + i)*0.2; // Float
+                            
+                            ctx.shadowBlur = 10;
+                            ctx.shadowColor = n.c;
+                            ctx.fillStyle = n.c;
                             ctx.beginPath();
-                            ctx.arc(star.x, star.y, star.s, 0, Math.PI*2);
+                            ctx.arc(n.x, n.y, n.r, 0, Math.PI*2);
                             ctx.fill();
-                            star.y -= star.s * 0.5;
-                            if(star.y < 0) star.y = canvas.height;
+                            ctx.shadowBlur = 0;
                         });
                         requestAnimationFrame(animate);
                     }
                     animate();
-                }
+                },
+                reset() { this.init(); App.toast.show('Topology Reset'); }
             },
 
-            // --- Typewriter Effect ---
-            typewriter: {
+            // --- Utilities ---
+            bgCanvas: {
                 init() {
-                    const el = document.getElementById('hero-typewriter');
-                    if(!el) return;
-                    const text = "AtHash";
-                    let i = 0;
-                    const type = () => {
-                        if(i < text.length) {
-                            el.innerHTML += text.charAt(i);
-                            i++;
-                            setTimeout(type, 150);
-                        }
-                    };
-                    type();
+                    const c = document.getElementById('bg-canvas');
+                    const x = c.getContext('2d');
+                    c.width = window.innerWidth; c.height = window.innerHeight;
+                    const s = Array(50).fill().map(() => ({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*2}));
+                    function a() {
+                        x.clearRect(0,0,c.width,c.height);
+                        x.fillStyle = '#64ffda';
+                        s.forEach(p => {
+                            x.globalAlpha = 0.2;
+                            x.beginPath(); x.arc(p.x,p.y,p.r,0,Math.PI*2); x.fill();
+                            p.y -= 0.2; if(p.y<0) p.y=c.height;
+                        });
+                        requestAnimationFrame(a);
+                    }
+                    a();
                 }
             },
-            
-            // --- Live Feed Simulator ---
-            feed: {
-                init() {
-                    const el = document.getElementById('activity-feed');
-                    if(!el) return;
-                    const items = [
-                        { txt: "User J.Doe accessed Vault", type: "info" },
-                        { txt: "Pipeline #402 deployed to Prod", type: "success" },
-                        { txt: "API Rate Limit Warning (80%)", type: "warn" },
-                        { txt: "New Device Login: IP 192.168.0.1", type: "info" }
-                    ];
-                    
-                    setInterval(() => {
-                        const item = items[Math.floor(Math.random()*items.length)];
-                        const div = document.createElement('div');
-                        const time = new Date().toLocaleTimeString('en-US', {hour12: false});
-                        
-                        let color = "text-slate-400";
-                        if(item.type === 'success') color = "text-green-400";
-                        if(item.type === 'warn') color = "text-orange-400";
-
-                        div.className = "flex gap-3 animate-fade-in-up";
-                        div.innerHTML = `<span class="text-slate-600">${time}</span> <span class="${color}">${item.txt}</span>`;
-                        
-                        el.prepend(div);
-                        if(el.children.length > 10) el.lastElementChild.remove();
-                    }, 3000);
+            toast: {
+                show(msg, type) {
+                    const c = document.getElementById('toast-container');
+                    const d = document.createElement('div');
+                    const color = type==='success'?'border-green-500 text-green-400':'border-teal-400 text-teal-400';
+                    d.className = `glass-panel px-4 py-3 border-l-4 ${color} animate-fade-in flex items-center gap-2`;
+                    d.innerHTML = `<i class="ph ${type==='success'?'ph-check-circle':'ph-info'}"></i> <span class="text-sm text-white">${msg}</span>`;
+                    c.appendChild(d);
+                    setTimeout(() => d.remove(), 3000);
                 }
             }
         };
 
-        // Boot
-        document.addEventListener('DOMContentLoaded', () => App.init());
+        window.addEventListener('DOMContentLoaded', () => App.init());
     </script>
 </body>
 </html>
