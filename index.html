@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AtHash Technologies | Security-First Automation</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            navy: '#0a192f',       // Main Background
+                            slate: '#112240',      // Card/Section Background
+                            teal: '#64ffda',       // Primary Accent
+                            tealDim: 'rgba(100, 255, 218, 0.1)',
+                            white: '#e6f1ff',      // Primary Text
+                            grey: '#8892b0',       // Secondary Text
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                        sans: ['"Inter"', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #0a192f; color: #e6f1ff; overflow-x: hidden; }
+        
+        /* Circuit Background Logic */
+        .circuit-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;
+            background-image: linear-gradient(rgba(100, 255, 218, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(100, 255, 218, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+        }
+
+        /* Utilities */
+        .cursor-blink { animation: blink 1s step-end infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        .hidden-view { display: none !important; opacity: 0; }
+        .visible-view { display: block; opacity: 1; transition: opacity 0.5s; }
+        .interactive { position: relative; z-index: 50; cursor: pointer; }
+        
+        /* Smooth Scroll */
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body class="font-sans antialiased selection:bg-brand-teal selection:text-brand-navy">
+
+    <div class="circuit-bg"></div>
+
+    <div id="public-view" class="visible-view relative z-10">
+        
+        <nav class="fixed top-0 w-full z-50 bg-brand-navy/90 backdrop-blur-md border-b border-brand-teal/10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-20">
+                    <div class="flex-shrink-0 flex items-center gap-3 interactive">
+                        <img src="logo.jpg" alt="AtHash" class="h-10 w-auto rounded border border-brand-teal/20 shadow-lg" onerror="this.style.display='none'; this.nextElementSibling.innerHTML='AtHash_Tech'">
+                        <span class="font-mono font-bold text-xl tracking-tighter text-brand-white">AtHash<span class="text-brand-teal">.technologies</span></span>
+                    </div>
+                    
+                    <div class="hidden md:flex space-x-8 font-mono text-sm items-center">
+                        <a href="#services" class="interactive text-brand-grey hover:text-brand-teal transition-colors">./services</a>
+                        <a href="#audit" class="interactive text-brand-grey hover:text-brand-teal transition-colors">./security_audit</a>
+                        <button onclick="startLoginSequence()" class="interactive px-5 py-2 border border-brand-teal text-brand-teal rounded font-bold hover:bg-brand-teal hover:text-brand-navy transition-all shadow-[0_0_15px_rgba(100,255,218,0.1)]">
+                            CLIENT_LOGIN
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <section class="relative min-h-screen flex items-center justify-center pt-20">
+            <div class="max-w-7xl w-full mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="space-y-8 z-10">
+                    <div class="inline-flex items-center space-x-2 text-brand-teal font-mono text-xs tracking-widest bg-brand-tealDim px-3 py-1 rounded border border-brand-teal/20">
+                        <span class="relative flex h-2 w-2">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-teal opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-teal"></span>
+                        </span>
+                        <span>SYSTEM_STATUS: ONLINE</span>
+                    </div>
+
+                    <h1 class="text-5xl md:text-7xl font-bold text-brand-white tracking-tight leading-tight">
+                        <span id="typewriter">AtHash</span><span class="cursor-blink text-brand-teal">_</span>
+                    </h1>
+
+                    <p class="text-brand-grey text-lg leading-relaxed max-w-lg">
+                        <strong class="text-brand-white">Attach. Automate. Advance.</strong><br>
+                        We engineer secure, modular automation systems for the modern enterprise. Stop trading security for efficiency.
+                    </p>
+
+                    <div class="flex gap-4 pt-2">
+                        <a href="#audit" class="interactive px-8 py-4 bg-brand-teal text-brand-navy font-bold font-mono rounded hover:bg-white transition-all duration-300 shadow-lg hover:shadow-brand-teal/50">
+                            START_AUDIT()
+                        </a>
+                        <a href="#services" class="interactive px-8 py-4 border border-brand-grey text-brand-grey font-mono rounded hover:text-brand-teal hover:border-brand-teal transition-all">
+                            VIEW_SOLUTIONS
+                        </a>
+                    </div>
+                </div>
+
+                <div class="hidden lg:block relative animate-float z-10">
+                    <div class="absolute -z-10 top-0 right-10 w-72 h-72 bg-brand-teal rounded-full opacity-10 blur-[100px]"></div>
+                    <div class="w-full max-w-lg bg-brand-slate rounded-lg border border-brand-teal/30 shadow-2xl overflow-hidden backdrop-blur-md bg-opacity-95">
+                        <div class="bg-[#020c1b] px-4 py-3 flex items-center space-x-2 border-b border-brand-teal/10">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                            <span class="text-xs text-brand-grey font-mono ml-4 opacity-50">bash — athash-core</span>
+                        </div>
+                        <div class="p-6 font-mono text-sm space-y-3 h-[320px] overflow-y-auto" id="landing-terminal"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="services" class="py-24 bg-brand-slate/30 border-y border-brand-teal/5">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-bold text-brand-white"><span class="text-brand-teal">01.</span> Core Capabilities</h2>
+                    <p class="text-brand-grey mt-4 max-w-2xl mx-auto">Our modular approach attaches to your existing infrastructure to automate workflows without compromising security.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="interactive bg-brand-slate border border-brand-teal/10 p-8 rounded-lg hover:border-brand-teal/50 transition-all hover:-translate-y-2 group">
+                        <i class="ph ph-shield-check text-4xl text-brand-teal mb-4 group-hover:scale-110 transition-transform block"></i>
+                        <h3 class="text-xl font-bold text-brand-white mb-2">Secure Workflow</h3>
+                        <p class="text-brand-grey text-sm leading-relaxed">Identity & access management (IAM), onboarding workflows, and policy-driven controls. We build the Shield.</p>
+                    </div>
+                    <div class="interactive bg-brand-slate border border-brand-teal/10 p-8 rounded-lg hover:border-brand-teal/50 transition-all hover:-translate-y-2 group">
+                        <i class="ph ph-circuitry text-4xl text-brand-teal mb-4 group-hover:scale-110 transition-transform block"></i>
+                        <h3 class="text-xl font-bold text-brand-white mb-2">Operational Tools</h3>
+                        <p class="text-brand-grey text-sm leading-relaxed">Python/PowerShell scripting and low-code integration to bridge legacy SQL with modern cloud apps.</p>
+                    </div>
+                    <div class="interactive bg-brand-slate border border-brand-teal/10 p-8 rounded-lg hover:border-brand-teal/50 transition-all hover:-translate-y-2 group">
+                        <i class="ph ph-file-code text-4xl text-brand-teal mb-4 group-hover:scale-110 transition-transform block"></i>
+                        <h3 class="text-xl font-bold text-brand-white mb-2">Doc Intelligence</h3>
+                        <p class="text-brand-grey text-sm leading-relaxed">AI processors that automate CV parsing, contract generation, and compliance checks. Unlocking data from documents.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="audit" class="py-24 relative z-20">
+            <div class="max-w-4xl mx-auto px-4">
+                <div class="bg-brand-navy border border-brand-teal/20 rounded-xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10"><i class="ph ph-lock-key text-9xl text-brand-teal"></i></div>
+                    
+                    <h2 class="text-2xl md:text-3xl font-bold text-brand-white mb-2">Security Diagnostic Tool</h2>
+                    <p class="text-brand-grey mb-8">Test your current automation maturity against Enterprise standards.</p>
+                    
+                    <form onsubmit="runAudit(event)" class="relative z-10">
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-brand-teal font-mono text-sm mb-2">Q1: How are API Keys currently managed?</label>
+                                <select id="q1" class="interactive w-full bg-brand-slate border border-brand-grey/30 rounded p-4 text-brand-white focus:border-brand-teal outline-none transition-colors">
+                                    <option value="0">Plain Text / Hardcoded in Scripts</option>
+                                    <option value="5">Environment Variables (.env)</option>
+                                    <option value="10">Cloud Secret Manager (Vault/AWS)</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="interactive w-full py-4 bg-brand-teal/10 border border-brand-teal text-brand-teal font-bold rounded hover:bg-brand-teal hover:text-brand-navy transition-all uppercase tracking-widest text-sm">
+                                Run System Analysis
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div id="auditResult" class="hidden mt-8 border-t border-brand-grey/20 pt-6">
+                        <div class="flex justify-between text-xs font-mono text-brand-grey mb-2">
+                            <span>RISK_ASSESSMENT</span>
+                            <span id="scoreText">CALCULATING...</span>
+                        </div>
+                        <div class="w-full bg-brand-slate h-2 rounded-full overflow-hidden">
+                            <div id="scoreBar" class="h-full bg-brand-teal transition-all duration-1000" style="width: 0%"></div>
+                        </div>
+                        <p id="scoreMessage" class="mt-4 text-sm font-mono text-brand-teal"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="py-8 border-t border-brand-teal/10 bg-brand-navy text-center">
+            <p class="text-brand-grey text-sm font-mono">© 2025 AtHash Technologies. All Systems Operational.</p>
+        </footer>
+    </div>
+
+    <div id="loading-view" class="hidden-view fixed inset-0 z-[100] bg-brand-navy flex flex-col items-center justify-center">
+        <div class="relative">
+            <div class="w-16 h-16 border-4 border-brand-teal border-t-transparent rounded-full animate-spin"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+                <div class="w-2 h-2 bg-brand-teal rounded-full animate-pulse"></div>
+            </div>
+        </div>
+        <p class="mt-6 font-mono text-brand-teal text-sm tracking-widest animate-pulse">ESTABLISHING_SECURE_HANDSHAKE...</p>
+    </div>
+
+    <div id="app-view" class="hidden-view fixed inset-0 z-50 flex h-screen overflow-hidden bg-brand-navy">
+        
+        <aside class="w-64 flex-shrink-0 border-r border-brand-teal/10 bg-brand-navy hidden md:flex flex-col">
+            <div class="h-16 flex items-center px-6 border-b border-brand-teal/10 gap-3">
+                <img src="logo.jpg" alt="AH" class="h-8 w-auto rounded border border-brand-teal/20" onerror="this.style.display='none'">
+                <div class="font-mono font-bold text-xl text-brand-white">AtHash<span class="text-brand-teal">_OS</span></div>
+            </div>
+            
+            <nav class="flex-1 px-3 py-6 space-y-1">
+                <a href="#" class="bg-brand-teal/10 text-brand-teal group flex items-center px-3 py-2.5 text-sm font-mono rounded-md border-l-2 border-brand-teal transition-all">
+                    <i class="ph ph-squares-four text-lg mr-3"></i> Dashboard
+                </a>
+                <a href="#" class="text-brand-grey hover:bg-brand-slate hover:text-brand-white group flex items-center px-3 py-2.5 text-sm font-mono rounded-md transition-all">
+                    <i class="ph ph-lightning text-lg mr-3"></i> Active_Builds
+                </a>
+                <a href="#" class="text-brand-grey hover:bg-brand-slate hover:text-brand-white group flex items-center px-3 py-2.5 text-sm font-mono rounded-md transition-all">
+                    <i class="ph ph-files text-lg mr-3"></i> Data_Vault
+                </a>
+                <div class="mt-8 px-3 text-xs font-semibold text-brand-grey/50 uppercase tracking-wider font-mono">Configuration</div>
+                <a href="#" class="text-brand-grey hover:bg-brand-slate hover:text-brand-white group flex items-center px-3 py-2.5 text-sm font-mono rounded-md transition-all">
+                    <i class="ph ph-key text-lg mr-3"></i> API_Keys
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-brand-teal/10">
+                <button onclick="logoutSequence()" class="interactive flex items-center text-sm font-mono text-brand-grey hover:text-red-400 transition-colors w-full">
+                    <i class="ph ph-sign-out mr-2"></i> DISCONNECT
+                </button>
+            </div>
+        </aside>
+
+        <main class="flex-1 flex flex-col min-w-0 overflow-hidden relative z-10">
+            <header class="h-16 flex items-center justify-between px-6 border-b border-brand-teal/10 bg-brand-navy/90 backdrop-blur">
+                <h2 class="text-brand-white font-mono text-sm opacity-80">root<span class="text-brand-grey">/</span>dashboard</h2>
+                <div class="flex items-center space-x-4">
+                    <span class="h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
+                    <span class="text-xs font-mono text-brand-teal">SYSTEM_OPTIMAL</span>
+                </div>
+            </header>
+
+            <div class="flex-1 overflow-y-auto p-8 scroll-smooth">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-brand-slate border border-brand-grey/10 rounded-lg p-6 hover:border-brand-teal/50 transition-colors group">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-brand-grey text-xs font-mono uppercase">Active Scripts</h3>
+                            <i class="ph ph-code text-brand-teal opacity-50 group-hover:opacity-100"></i>
+                        </div>
+                        <div class="mt-2 text-4xl font-bold text-brand-white">12</div>
+                    </div>
+                    <div class="bg-brand-slate border border-brand-grey/10 rounded-lg p-6 hover:border-brand-teal/50 transition-colors group">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-brand-grey text-xs font-mono uppercase">Docs Processed</h3>
+                            <i class="ph ph-file-text text-brand-teal opacity-50 group-hover:opacity-100"></i>
+                        </div>
+                        <div class="mt-2 text-4xl font-bold text-brand-white">1,240</div>
+                    </div>
+                    <div class="bg-brand-slate border border-brand-grey/10 rounded-lg p-6 hover:border-brand-teal/50 transition-colors group">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-brand-grey text-xs font-mono uppercase">Security Flags</h3>
+                            <i class="ph ph-shield-check text-green-400 opacity-50 group-hover:opacity-100"></i>
+                        </div>
+                        <div class="mt-2 text-4xl font-bold text-green-400">0</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 space-y-6">
+                        <h2 class="text-brand-white font-bold text-lg">Active Workflows</h2>
+                        <div class="bg-brand-slate/50 border border-brand-grey/10 rounded-lg p-6 hover:bg-brand-slate transition-colors">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-brand-white font-semibold flex items-center gap-2"><i class="ph ph-users text-blue-400"></i> HR Onboarding Pipeline</h3>
+                                <span class="text-xs font-mono text-blue-400 bg-blue-500/10 px-2 py-1 rounded border border-blue-500/20">RUNNING</span>
+                            </div>
+                            <div class="w-full bg-brand-navy rounded-full h-2 mt-4">
+                                <div class="bg-brand-teal h-2 rounded-full shadow-[0_0_10px_#64ffda]" style="width: 75%"></div>
+                            </div>
+                            <div class="flex justify-between mt-2 text-xs text-brand-grey font-mono">
+                                <span>Provisioning AWS...</span>
+                                <span>75%</span>
+                            </div>
+                        </div>
+                        
+                         <div class="bg-brand-slate/50 border border-brand-grey/10 rounded-lg p-6 hover:bg-brand-slate transition-colors opacity-75">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-brand-white font-semibold flex items-center gap-2"><i class="ph ph-database text-purple-400"></i> Legacy SQL Bridge</h3>
+                                <span class="text-xs font-mono text-brand-grey border border-brand-grey px-2 py-1 rounded">IDLE</span>
+                            </div>
+                            <div class="w-full bg-brand-navy rounded-full h-2 mt-4">
+                                <div class="bg-brand-teal h-2 rounded-full" style="width: 100%"></div>
+                            </div>
+                            <div class="flex justify-between mt-2 text-xs text-brand-grey font-mono">
+                                <span>Last sync: 2h ago</span>
+                                <span>Complete</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#050f1e] rounded-lg border border-brand-teal/20 h-[350px] flex flex-col shadow-inner">
+                        <div class="bg-brand-navy px-4 py-3 border-b border-brand-teal/10 text-xs font-mono text-brand-grey flex justify-between items-center">
+                            <span>System Logs</span>
+                            <span class="flex items-center gap-1 text-green-500"><span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Live</span>
+                        </div>
+                        <div class="p-4 font-mono text-xs space-y-3 overflow-y-auto flex-1 custom-scrollbar" id="dashboard-logs">
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 1. TYPEWRITER EFFECT
+        const textElement = document.getElementById('typewriter');
+        const phrases = ["Attach.", "Automate.", "Advance."];
+        let phraseIndex = 0, charIndex = 0, isDeleting = false;
+        
+        function type() {
+            const currentPhrase = phrases[phraseIndex];
+            textElement.innerHTML = currentPhrase.substring(0, charIndex + (isDeleting ? -1 : 1));
+            charIndex += isDeleting ? -1 : 1;
+            let speed = isDeleting ? 50 : 150;
+            if (!isDeleting && charIndex === currentPhrase.length) {
+                if(phraseIndex === 2) return; 
+                speed = 2000; isDeleting = true;
+            } else if (isDeleting && charIndex === 0) { isDeleting = false; phraseIndex++; speed = 500; }
+            setTimeout(type, speed);
+        }
+        setTimeout(type, 1000);
+
+        // 2. HERO TERMINAL SIMULATION
+        const terminalBody = document.getElementById('landing-terminal');
+        const commands = [
+            { text: "athash init --secure", color: "text-brand-white" },
+            { text: "> Encrypting data streams...", color: "text-brand-grey" },
+            { text: "> Optimizing logic nodes...", color: "text-brand-grey" },
+            { text: "[SUCCESS] Protocol Established.", color: "text-green-400 font-bold" }
+        ];
+        let cmdIdx = 0;
+        function runLandingTerminal() {
+            if (cmdIdx < commands.length) {
+                const div = document.createElement('div');
+                div.className = commands[cmdIdx].color;
+                div.innerHTML = (cmdIdx === 0 ? '<span class="text-brand-teal mr-2">➜</span>' : '') + commands[cmdIdx].text;
+                terminalBody.appendChild(div);
+                cmdIdx++;
+                setTimeout(runLandingTerminal, 1200);
+            }
+        }
+        runLandingTerminal();
+
+        // 3. AUDIT FORM LOGIC
+        function runAudit(e) {
+            e.preventDefault();
+            document.getElementById('auditResult').classList.remove('hidden');
+            const val = parseInt(document.getElementById('q1').value);
+            const scoreBar = document.getElementById('scoreBar');
+            const msg = document.getElementById('scoreMessage');
+            const scoreText = document.getElementById('scoreText');
+            
+            scoreText.innerText = "ANALYZING...";
+            
+            setTimeout(() => {
+                if(val > 5) { 
+                    scoreBar.style.width = '100%'; 
+                    scoreBar.className = 'h-full bg-brand-teal transition-all duration-1000';
+                    msg.innerText = "EXCELLENT: Secure architecture detected. Enterprise Ready."; 
+                    msg.className = "mt-4 text-sm font-mono text-green-400";
+                    scoreText.innerText = "SCORE: 100/100";
+                } else { 
+                    scoreBar.style.width = '30%'; 
+                    scoreBar.className = 'h-full bg-red-500 transition-all duration-1000';
+                    msg.innerText = "CRITICAL: Insecure key storage detected. Data breach risk high."; 
+                    msg.className = "mt-4 text-sm font-mono text-red-400";
+                    scoreText.innerText = "SCORE: 30/100";
+                }
+            }, 500);
+        }
+
+        // 4. LOGIN / DASHBOARD TRANSITION
+        let logInterval;
+        
+        function startLoginSequence() {
+            const publicView = document.getElementById('public-view');
+            publicView.style.opacity = '0';
+            setTimeout(() => {
+                publicView.classList.add('hidden-view');
+                const loader = document.getElementById('loading-view');
+                loader.classList.remove('hidden-view');
+                setTimeout(() => {
+                    loader.classList.add('hidden-view');
+                    const appView = document.getElementById('app-view');
+                    appView.classList.remove('hidden-view');
+                    appView.classList.add('visible-view');
+                    startDashboardLogs();
+                }, 1500);
+            }, 500);
+        }
+
+        function logoutSequence() {
+            location.reload(); 
+        }
+
+        // 5. DASHBOARD LIVE LOGS
+        function startDashboardLogs() {
+            const logContainer = document.getElementById('dashboard-logs');
+            const logs = [
+                "Authorized handshake: 192.168.1.42",
+                "CV_Parser: Processing batch #402...",
+                "Azure_AD: User permission updated",
+                "Invoice_Bot: 14 PDFs sanitized",
+                "System: Garbage collection started",
+                "API: Rate limit check passed",
+                "Security: Zero-Trust verification success"
+            ];
+            let i = 0;
+            if (logInterval) clearInterval(logInterval);
+            
+            logInterval = setInterval(() => {
+                const div = document.createElement('div');
+                const time = new Date().toLocaleTimeString('en-US', {hour12: false});
+                div.className = "text-brand-grey border-l-2 border-brand-teal/20 pl-2 animate-pulse";
+                div.innerHTML = `<span class="opacity-50 mr-2 text-[10px]">[${time}]</span> ${logs[i % logs.length]}`;
+                logContainer.prepend(div);
+                if(logContainer.children.length > 20) logContainer.lastChild.remove();
+                i++;
+            }, 1800);
+        }
+    </script>
+</body>
+</html>
