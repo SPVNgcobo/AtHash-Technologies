@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AtHash OS | Enterprise Platform</title>
+    <title>AtHash OS | Zero-Trust Infrastructure</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -14,22 +14,31 @@
             theme: {
                 extend: {
                     colors: {
-                        background: '#050505',
-                        surface: '#0A0A0A',
-                        surfaceHighlight: '#111111',
-                        border: '#222222',
-                        primary: '#3B82F6', // Enterprise Blue (More trust than Teal)
-                        primaryDim: 'rgba(59, 130, 246, 0.1)',
-                        text: '#EDEDED',
-                        textDim: '#888888'
+                        background: '#030712', // Darker, colder background
+                        surface: '#0B1120',    // Navy-tinted surface
+                        surfaceHighlight: '#162032',
+                        border: '#1E293B',
+                        primary: '#3B82F6',    // Trust Blue
+                        secondary: '#10B981',  // Success Emerald
+                        warning: '#F59E0B',    // Alert Orange
+                        danger: '#EF4444',     // Critical Red
+                        text: '#F8FAFC',
+                        textDim: '#64748B'
                     },
                     fontFamily: {
                         sans: ['"Inter"', 'system-ui', 'sans-serif'],
                         mono: ['"JetBrains Mono"', 'monospace'],
                     },
                     boxShadow: {
-                        'glow': '0 0 20px rgba(59, 130, 246, 0.15)',
-                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3)'
+                        'glow': '0 0 20px rgba(59, 130, 246, 0.1)',
+                        'modal': '0 25px 50px -12px rgba(0, 0, 0, 0.7)'
+                    },
+                    animation: {
+                        'slide-in': 'slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        slideIn: { '0%': { opacity: 0, transform: 'translateY(10px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } }
                     }
                 }
             }
@@ -37,250 +46,183 @@
     </script>
 
     <style>
-        /* --- PRO GRADE CSS --- */
-        body { background-color: #050505; color: #EDEDED; overflow: hidden; }
+        body { background-color: #030712; color: #F8FAFC; overflow: hidden; }
         
-        /* Subtle Grid Background */
         .bg-grid {
-            background-size: 40px 40px;
-            background-image: linear-gradient(to right, #111 1px, transparent 1px),
-                              linear-gradient(to bottom, #111 1px, transparent 1px);
-            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+            background-size: 60px 60px;
+            background-image: linear-gradient(to right, #111827 1px, transparent 1px),
+                              linear-gradient(to bottom, #111827 1px, transparent 1px);
+            mask-image: radial-gradient(circle at 50% 50%, black 40%, transparent 100%);
         }
 
-        /* Glassmorphism 2.0 (Darker, cleaner) */
-        .glass {
-            background: rgba(10, 10, 10, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        /* High Performance Animations */
-        .fade-enter { animation: fadeEnter 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes fadeEnter { from { opacity: 0; transform: scale(0.99); } to { opacity: 1; transform: scale(1); } }
-
-        /* Custom Scrollbar (Invisible but functional) */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-
-        /* Utilities */
+        .glass { background: rgba(11, 17, 32, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
         .hidden-force { display: none !important; }
-        .text-xxs { font-size: 10px; line-height: 1rem; }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
         
-        /* Interactive Elements */
-        .btn-hover { transition: all 0.2s; }
-        .btn-hover:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.2); }
-        .btn-active { background: rgba(59, 130, 246, 0.1); color: #3B82F6; border-color: rgba(59, 130, 246, 0.3); }
-
-        /* Status Dot Pulse */
-        .status-dot { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); animation: pulse-green 2s infinite; }
-        @keyframes pulse-green { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
+        /* Status Indicators */
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+        .status-dot.active { background-color: #10B981; box-shadow: 0 0 8px rgba(16, 185, 129, 0.4); }
+        
+        /* Typography */
+        .h-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: #64748B; font-weight: 600; }
     </style>
 </head>
-<body class="font-sans antialiased text-sm">
+<body class="font-sans antialiased text-sm select-none">
 
     <div class="fixed inset-0 bg-grid z-0 pointer-events-none"></div>
 
-    <div id="toast-layer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+    <div id="toast-layer" class="fixed bottom-6 right-6 z-[100] flex flex-col gap-2 pointer-events-none"></div>
+    <div id="modal-overlay" class="hidden-force fixed inset-0 z-[60] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-300"></div>
 
     <div id="view-login" class="relative z-10 w-full h-screen flex flex-col items-center justify-center transition-all duration-500">
-        <div class="w-full max-w-md p-8 glass rounded-2xl shadow-2xl space-y-8 animate-slide-up border border-white/10">
+        <div class="w-full max-w-md p-8 glass rounded-xl shadow-2xl space-y-8 animate-slide-in border border-border">
             <div class="flex flex-col items-center gap-4">
-                <div class="w-12 h-12 bg-surfaceHighlight rounded-xl flex items-center justify-center border border-white/10 text-primary shadow-glow">
+                <div class="w-12 h-12 bg-surfaceHighlight rounded-lg flex items-center justify-center border border-white/5 text-primary shadow-glow">
                     <i class="ph-bold ph-shield-check text-2xl"></i>
                 </div>
                 <div class="text-center">
-                    <h1 class="text-2xl font-bold text-text">AtHash<span class="text-primary">_OS</span></h1>
-                    <p class="text-textDim text-xs mt-1">Enterprise Automation Environment</p>
+                    <h1 class="text-xl font-bold text-text tracking-tight">AtHash<span class="text-primary">_Technologies</span></h1>
+                    <p class="text-textDim text-xs mt-2 font-mono">Zero-Trust Infrastructure Access</p>
                 </div>
             </div>
-
-            <div class="space-y-4">
-                <div class="space-y-2">
-                    <label class="text-xs font-mono text-textDim uppercase tracking-wider">Identity</label>
-                    <div class="flex items-center gap-3 px-4 py-3 bg-black/50 border border-white/10 rounded-lg text-textDim cursor-not-allowed">
-                        <i class="ph-fill ph-user"></i>
-                        <span class="font-mono text-sm">admin@athash.tech</span>
-                        <i class="ph-fill ph-lock-key ml-auto text-xs"></i>
-                    </div>
-                </div>
-                <button onclick="App.Auth.login()" class="w-full py-3 bg-primary text-white font-bold rounded-lg hover:bg-blue-600 transition-all shadow-glow flex items-center justify-center gap-2 group">
-                    <span>Authenticate</span>
-                    <i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i>
+            <div class="space-y-3">
+                <button onclick="App.Auth.login()" class="w-full py-3 bg-primary text-white font-semibold rounded hover:bg-blue-600 transition-all shadow-glow flex items-center justify-center gap-2 group text-sm">
+                    <i class="ph-bold ph-fingerprint"></i> Authenticate via SSO
                 </button>
             </div>
-            
-            <div class="flex justify-between text-xxs text-textDim font-mono pt-4 border-t border-white/5">
-                <span>v5.0.2-stable</span>
-                <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-green-500 status-dot"></span> Systems Normal</span>
+            <div class="text-center pt-4 border-t border-border">
+                <div class="inline-flex items-center gap-2 px-2 py-1 rounded bg-green-500/10 border border-green-500/10">
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                    <span class="text-[10px] font-mono text-green-400">SYSTEM OPERATIONAL</span>
+                </div>
             </div>
         </div>
     </div>
 
     <div id="view-app" class="hidden-force fixed inset-0 z-20 bg-background flex">
         
-        <aside class="w-[280px] bg-surface border-r border-border flex flex-col flex-shrink-0 z-30">
+        <aside class="w-[260px] bg-surface border-r border-border flex flex-col flex-shrink-0 z-30">
             <div class="h-14 flex items-center px-4 border-b border-border gap-3">
                 <div class="w-6 h-6 bg-primary rounded flex items-center justify-center text-white text-xs font-bold">AH</div>
-                <span class="font-bold text-text">AtHash Inc.</span>
-                <span class="ml-auto px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-xxs font-mono text-textDim">PRO</span>
+                <span class="font-bold text-text text-sm">AtHash Inc.</span>
             </div>
 
             <div class="p-3">
-                <button class="w-full flex items-center gap-3 px-3 py-2 bg-surfaceHighlight border border-white/10 rounded-lg hover:border-white/20 transition-colors text-left group">
-                    <div class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]"></div>
+                <button onclick="App.UI.toggleWS()" class="w-full flex items-center gap-3 px-3 py-2 bg-surfaceHighlight border border-border rounded hover:border-white/10 transition-colors text-left group">
+                    <div id="ws-dot" class="status-dot active"></div>
                     <div class="flex-1 overflow-hidden">
-                        <div class="text-xs font-bold text-text truncate">Production</div>
-                        <div class="text-xxs text-textDim truncate font-mono">aws-us-east-1</div>
+                        <div class="text-xs font-bold text-text">Production</div>
+                        <div class="text-[10px] text-textDim font-mono">Secured Zone</div>
                     </div>
                     <i class="ph-bold ph-caret-down text-textDim group-hover:text-text"></i>
                 </button>
             </div>
 
             <nav class="flex-1 px-2 space-y-0.5 overflow-y-auto">
-                <div class="px-3 py-2 text-xxs font-bold text-textDim uppercase tracking-wider mt-2">Platform</div>
-                <button onclick="App.Router.go('overview')" id="nav-overview" class="w-full flex items-center gap-3 px-3 py-2 rounded-md text-textDim hover:text-text btn-hover group text-sm font-medium">
-                    <i class="ph ph-squares-four text-lg"></i> Overview
+                <div class="px-3 py-2 h-label mt-2">Infrastructure</div>
+                <button onclick="App.Router.go('overview')" id="nav-overview" class="w-full flex items-center gap-3 px-3 py-2 rounded text-textDim hover:text-text hover:bg-white/5 transition-colors text-xs font-medium group">
+                    <i class="ph ph-squares-four text-lg"></i> Command Center
                 </button>
-                <button onclick="App.Router.go('pipelines')" id="nav-pipelines" class="w-full flex items-center gap-3 px-3 py-2 rounded-md text-textDim hover:text-text btn-hover group text-sm font-medium">
-                    <i class="ph ph-git-merge text-lg"></i> Pipelines
-                    <span id="pipeline-count" class="ml-auto px-1.5 py-0.5 rounded bg-white/10 text-xxs text-white hidden">1</span>
-                </button>
-                <button onclick="App.Router.go('vault')" id="nav-vault" class="w-full flex items-center gap-3 px-3 py-2 rounded-md text-textDim hover:text-text btn-hover group text-sm font-medium">
-                    <i class="ph ph-lock-key text-lg"></i> Vault
+                <button onclick="App.Router.go('orchestration')" id="nav-orchestration" class="w-full flex items-center gap-3 px-3 py-2 rounded text-textDim hover:text-text hover:bg-white/5 transition-colors text-xs font-medium group">
+                    <i class="ph ph-git-merge text-lg"></i> Orchestration
                 </button>
                 
-                <div class="px-3 py-2 text-xxs font-bold text-textDim uppercase tracking-wider mt-6">Settings</div>
-                <button class="w-full flex items-center gap-3 px-3 py-2 rounded-md text-textDim hover:text-text btn-hover group text-sm font-medium">
-                    <i class="ph ph-users text-lg"></i> Team
+                <div class="px-3 py-2 h-label mt-4">Security & Governance</div>
+                <button onclick="App.Router.go('identity')" id="nav-identity" class="w-full flex items-center gap-3 px-3 py-2 rounded text-textDim hover:text-text hover:bg-white/5 transition-colors text-xs font-medium group">
+                    <i class="ph ph-users text-lg"></i> Identity (IAM)
                 </button>
-                <button class="w-full flex items-center gap-3 px-3 py-2 rounded-md text-textDim hover:text-text btn-hover group text-sm font-medium">
-                    <i class="ph ph-gear text-lg"></i> General
+                <button onclick="App.Router.go('vault')" id="nav-vault" class="w-full flex items-center gap-3 px-3 py-2 rounded text-textDim hover:text-text hover:bg-white/5 transition-colors text-xs font-medium group">
+                    <i class="ph ph-lock-key text-lg"></i> Sovereign Vault
+                </button>
+                <button onclick="App.Router.go('audit')" id="nav-audit" class="w-full flex items-center gap-3 px-3 py-2 rounded text-textDim hover:text-text hover:bg-white/5 transition-colors text-xs font-medium group">
+                    <i class="ph ph-scroll text-lg"></i> Audit Ledger
                 </button>
             </nav>
 
             <div class="p-3 border-t border-border">
-                <button onclick="App.Auth.logout()" class="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-white/5 text-textDim hover:text-red-400 transition-colors">
-                    <i class="ph ph-sign-out text-lg"></i>
-                    <span class="text-xs font-medium">Sign Out</span>
+                <button onclick="App.Auth.logout()" class="w-full flex items-center gap-3 px-3 py-2 rounded hover:bg-white/5 text-textDim hover:text-danger transition-colors">
+                    <i class="ph ph-power text-lg"></i> <span class="text-xs font-medium">Secure Logout</span>
                 </button>
             </div>
         </aside>
 
         <main class="flex-1 flex flex-col min-w-0 bg-background relative overflow-hidden">
-            
-            <header class="h-14 bg-background/80 backdrop-blur border-b border-border flex items-center justify-between px-6 z-20 sticky top-0">
-                <div class="flex items-center gap-2 text-sm text-textDim">
-                    <i class="ph ph-house"></i>
-                    <span>/</span>
-                    <span id="page-title" class="text-text font-medium">Overview</span>
+            <header class="h-14 bg-background/90 backdrop-blur border-b border-border flex items-center justify-between px-6 z-20">
+                <div class="flex items-center gap-2 text-xs text-textDim font-mono">
+                    <span class="text-primary">athash</span><span>/</span><span id="page-title" class="text-text">command-center</span>
                 </div>
-                <div class="flex items-center gap-3">
-                    <span class="flex items-center gap-1.5 px-2 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-xxs font-mono text-green-400">
-                        <span class="w-1 h-1 rounded-full bg-green-400 animate-pulse"></span> LIVE
-                    </span>
-                    <div class="w-8 h-8 rounded-full bg-surfaceHighlight border border-white/10 flex items-center justify-center text-xs font-bold">AD</div>
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2 px-2 py-1 rounded bg-surfaceHighlight border border-border">
+                        <span class="status-dot bg-green-500"></span>
+                        <span class="text-[10px] text-textDim font-mono">SOC2 COMPLIANT</span>
+                    </div>
                 </div>
             </header>
 
-            <div class="flex-1 overflow-y-auto p-6 md:p-8 relative z-10">
+            <div class="flex-1 overflow-y-auto p-6 relative z-10" id="main-scroll">
                 
-                <div id="page-overview" class="page animate-fade-in space-y-6">
+                <div id="page-overview" class="page space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="p-5 rounded-xl border border-border bg-surfaceHighlight/50">
-                            <div class="flex justify-between items-start mb-4">
-                                <span class="text-xs text-textDim font-medium uppercase tracking-wider">System Load</span>
-                                <i class="ph-bold ph-cpu text-textDim"></i>
-                            </div>
-                            <div class="text-3xl font-bold text-text font-mono tracking-tight">34<span class="text-lg text-textDim">%</span></div>
-                            <div class="h-10 w-full mt-2 relative overflow-hidden opacity-50">
-                                <canvas id="spark-load" class="absolute inset-0 w-full h-full"></canvas>
-                            </div>
+                        <div class="p-5 rounded-lg border border-border bg-surfaceHighlight/30">
+                            <div class="flex justify-between items-start mb-3"><span class="h-label">Compliance Score</span><i class="ph-fill ph-shield-check text-secondary"></i></div>
+                            <div class="text-2xl font-bold text-text font-mono">98.5%</div>
+                            <div class="text-[10px] text-textDim mt-1">GDPR & SOC2 Checks Passed</div>
                         </div>
-
-                        <div class="p-5 rounded-xl border border-border bg-surfaceHighlight/50">
-                            <div class="flex justify-between items-start mb-4">
-                                <span class="text-xs text-textDim font-medium uppercase tracking-wider">Requests / sec</span>
-                                <i class="ph-bold ph-globe text-textDim"></i>
-                            </div>
-                            <div class="text-3xl font-bold text-text font-mono tracking-tight">842</div>
-                            <div class="text-xs text-green-400 mt-2 font-mono">↑ 12% vs 1h ago</div>
+                        <div class="p-5 rounded-lg border border-border bg-surfaceHighlight/30">
+                            <div class="flex justify-between items-start mb-3"><span class="h-label">Active Nodes</span><i class="ph-fill ph-circles-three text-primary"></i></div>
+                            <div class="text-2xl font-bold text-text font-mono">24/24</div>
+                            <div class="text-[10px] text-green-400 mt-1">100% Uptime (30d)</div>
                         </div>
-
-                        <div class="p-5 rounded-xl border border-border bg-surfaceHighlight/50">
-                            <div class="flex justify-between items-start mb-4">
-                                <span class="text-xs text-textDim font-medium uppercase tracking-wider">Health Score</span>
-                                <i class="ph-bold ph-heartbeat text-primary"></i>
-                            </div>
-                            <div class="text-3xl font-bold text-text font-mono tracking-tight">100</div>
-                            <div class="w-full bg-white/5 rounded-full h-1 mt-4 overflow-hidden">
-                                <div class="bg-primary h-full w-full shadow-[0_0_10px_#3B82F6]"></div>
-                            </div>
+                        <div class="p-5 rounded-lg border border-border bg-surfaceHighlight/30">
+                            <div class="flex justify-between items-start mb-3"><span class="h-label">Threats Blocked</span><i class="ph-fill ph-warning-octagon text-warning"></i></div>
+                            <div class="text-2xl font-bold text-text font-mono">14</div>
+                            <div class="text-[10px] text-textDim mt-1">Last: Unauthorized API Access</div>
                         </div>
                     </div>
 
-                    <div class="rounded-xl border border-border bg-surfaceHighlight/30 overflow-hidden flex flex-col h-[400px]">
-                        <div class="px-5 py-3 border-b border-border flex justify-between items-center bg-surfaceHighlight/50">
-                            <h3 class="text-sm font-medium text-text">Real-Time Traffic Analysis</h3>
-                            <div class="flex gap-2">
-                                <span class="text-xxs font-mono text-textDim px-2 py-1 rounded bg-white/5">1H</span>
-                                <span class="text-xxs font-mono text-text bg-primary/20 text-primary px-2 py-1 rounded border border-primary/20">LIVE</span>
-                            </div>
+                    <div class="rounded-lg border border-border bg-surfaceHighlight/20 overflow-hidden flex flex-col h-[450px] relative">
+                        <div class="absolute top-4 left-4 z-10">
+                            <h3 class="text-sm font-bold text-text">Infrastructure Topology</h3>
+                            <p class="text-[10px] text-textDim">Real-time Node Status</p>
                         </div>
-                        <div class="flex-1 relative">
-                            <canvas id="main-chart" class="w-full h-full"></canvas>
-                        </div>
+                        <canvas id="topology-canvas" class="w-full h-full cursor-crosshair opacity-60"></canvas>
                     </div>
                 </div>
 
-                <div id="page-pipelines" class="page hidden-force animate-fade-in flex flex-col md:flex-row h-[calc(100vh-140px)] gap-6">
-                    <div class="w-full md:w-1/3 flex flex-col gap-4">
-                        <div class="flex justify-between items-center">
-                            <h2 class="font-bold text-text">Active Jobs</h2>
-                            <button onclick="App.Pipelines.addJob()" class="p-1.5 rounded hover:bg-white/10 text-textDim hover:text-white transition-colors"><i class="ph-bold ph-plus"></i></button>
-                        </div>
-                        <div class="flex-1 overflow-y-auto space-y-2 pr-2" id="job-list">
-                            </div>
-                    </div>
-                    
-                    <div class="flex-1 rounded-xl border border-border bg-[#0a0a0a] flex flex-col font-mono text-xs overflow-hidden shadow-2xl">
-                        <div class="px-4 py-2 bg-[#111] border-b border-border flex justify-between items-center select-none">
-                            <div class="flex gap-2">
-                                <div class="w-2.5 h-2.5 rounded-full bg-red-500/20 border border-red-500/50"></div>
-                                <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/20 border border-yellow-500/50"></div>
-                                <div class="w-2.5 h-2.5 rounded-full bg-green-500/20 border border-green-500/50"></div>
-                            </div>
-                            <span class="text-textDim" id="term-title">build-deploy-worker-01</span>
-                        </div>
-                        <div class="flex-1 p-4 overflow-y-auto space-y-1 text-slate-400" id="terminal-output">
-                            <div class="text-textDim">Waiting for job selection...</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="page-vault" class="page hidden-force animate-fade-in space-y-6">
+                <div id="page-orchestration" class="page hidden-force space-y-6">
                     <div class="flex justify-between items-center">
-                        <div>
-                            <h2 class="font-bold text-text">Secrets Manager</h2>
-                            <p class="text-xs text-textDim mt-1">End-to-end encrypted storage.</p>
-                        </div>
-                        <button class="px-3 py-1.5 bg-primary text-white text-xs font-bold rounded hover:bg-blue-600 transition-colors">Add Secret</button>
+                        <h2 class="font-bold text-text">Active Orchestrations</h2>
+                        <button onclick="App.Orchestration.trigger()" class="px-3 py-1.5 bg-primary/10 border border-primary/50 text-primary hover:bg-primary hover:text-white transition-colors text-xs font-bold rounded flex items-center gap-2">
+                            <i class="ph-bold ph-play"></i> Execute Workflow
+                        </button>
                     </div>
-                    <div class="rounded-xl border border-border overflow-hidden bg-surfaceHighlight/30">
-                        <table class="w-full text-left text-sm">
-                            <thead class="bg-surfaceHighlight border-b border-border text-xs text-textDim uppercase">
-                                <tr>
-                                    <th class="px-6 py-3 font-medium">Key Name</th>
-                                    <th class="px-6 py-3 font-medium">Environment</th>
-                                    <th class="px-6 py-3 font-medium">Value</th>
-                                    <th class="px-6 py-3 font-medium text-right">Actions</th>
-                                </tr>
+                    <div class="rounded-lg border border-border overflow-hidden bg-surfaceHighlight/30">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-surfaceHighlight border-b border-border text-textDim uppercase font-semibold">
+                                <tr><th class="px-6 py-3">Status</th><th class="px-6 py-3">Workflow</th><th class="px-6 py-3">Trigger</th><th class="px-6 py-3 text-right">Duration</th></tr>
                             </thead>
-                            <tbody class="divide-y divide-border" id="vault-rows"></tbody>
+                            <tbody class="divide-y divide-border" id="orch-list">
+                                </tbody>
                         </table>
                     </div>
+                </div>
+
+                <div id="page-identity" class="page hidden-force space-y-6">
+                    <div class="flex justify-between items-center">
+                        <h2 class="font-bold text-text">Identity Governance (IAM)</h2>
+                        <span class="text-xs text-textDim bg-surfaceHighlight px-2 py-1 rounded border border-border">4 Active Users</span>
+                    </div>
+                    <div class="grid gap-3" id="iam-list">
+                        </div>
+                </div>
+
+                <div id="page-vault" class="page hidden-force space-y-6">
+                    <div class="flex justify-between items-center">
+                        <h2 class="font-bold text-text">Sovereign Data Vault</h2>
+                        <button onclick="App.UI.toast('Audit Log Downloaded')" class="text-xs text-textDim hover:text-white flex items-center gap-2"><i class="ph ph-download"></i> Export Logs</button>
+                    </div>
+                    <div class="grid gap-3" id="vault-grid"></div>
                 </div>
 
             </div>
@@ -290,231 +232,155 @@
     <script>
         const App = {
             init() {
-                // Initialize Charts
-                this.Charts.initSparkline();
-                this.Charts.initMainChart();
+                this.Canvas.initTopology();
+                this.Orchestration.render();
+                this.Identity.render();
+                this.Vault.render();
             },
 
-            // --- NAVIGATION ---
             Router: {
                 go(page) {
                     document.querySelectorAll('.page').forEach(el => el.classList.add('hidden-force'));
                     document.getElementById(`page-${page}`).classList.remove('hidden-force');
                     
-                    document.querySelectorAll('button[id^="nav-"]').forEach(el => {
-                        el.classList.remove('btn-active');
+                    document.querySelectorAll('[id^="nav-"]').forEach(el => {
+                        el.classList.remove('bg-white/5', 'text-text');
                         el.classList.add('text-textDim');
                     });
                     
                     const active = document.getElementById(`nav-${page}`);
-                    active.classList.add('btn-active');
-                    active.classList.remove('text-textDim');
+                    if(active) { active.classList.add('bg-white/5', 'text-text'); active.classList.remove('text-textDim'); }
                     
-                    document.getElementById('page-title').innerText = page.charAt(0).toUpperCase() + page.slice(1);
-
-                    // Lazy Load
-                    if(page === 'pipelines') App.Pipelines.init();
-                    if(page === 'vault') App.Vault.init();
+                    document.getElementById('page-title').innerText = page;
                 }
             },
 
-            // --- AUTH ---
             Auth: {
                 login() {
+                    document.body.style.cursor = 'wait';
                     const btn = event.currentTarget;
-                    const originalText = btn.innerHTML;
-                    btn.innerHTML = `<i class="ph-bold ph-spinner animate-spin"></i> Connecting...`;
-                    btn.classList.add('opacity-75', 'cursor-not-allowed');
-                    
+                    btn.innerHTML = `<i class="ph-bold ph-spinner animate-spin"></i> Verifying...`;
                     setTimeout(() => {
                         document.getElementById('view-login').style.opacity = '0';
                         setTimeout(() => {
                             document.getElementById('view-login').classList.add('hidden-force');
                             document.getElementById('view-app').classList.remove('hidden-force');
                             App.Router.go('overview');
+                            document.body.style.cursor = 'default';
                         }, 500);
-                    }, 1500);
+                    }, 1000);
                 },
                 logout() { location.reload(); }
             },
 
-            // --- DATA VIZ ENGINE (Canvas) ---
-            Charts: {
-                initSparkline() {
-                    const c = document.getElementById('spark-load');
-                    const ctx = c.getContext('2d');
-                    let data = Array(50).fill(0).map(() => 20 + Math.random() * 10);
-                    
-                    const draw = () => {
-                        const w = c.width = c.parentElement.offsetWidth;
-                        const h = c.height = c.parentElement.offsetHeight;
-                        
-                        // Shift data
-                        data.push(Math.max(10, Math.min(90, data[data.length-1] + (Math.random()-0.5)*20)));
-                        data.shift();
-
-                        ctx.clearRect(0,0,w,h);
-                        ctx.beginPath();
-                        ctx.strokeStyle = '#3B82F6';
-                        ctx.lineWidth = 2;
-                        
-                        data.forEach((val, i) => {
-                            const x = (i / (data.length - 1)) * w;
-                            const y = h - (val / 100) * h;
-                            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-                        });
-                        ctx.stroke();
-                        
-                        // Gradient Fill
-                        ctx.lineTo(w, h); ctx.lineTo(0, h);
-                        const grad = ctx.createLinearGradient(0, 0, 0, h);
-                        grad.addColorStop(0, 'rgba(59, 130, 246, 0.2)');
-                        grad.addColorStop(1, 'rgba(59, 130, 246, 0)');
-                        ctx.fillStyle = grad;
-                        ctx.fill();
-
-                        requestAnimationFrame(draw);
-                    };
-                    draw();
-                },
-                initMainChart() {
-                    const c = document.getElementById('main-chart');
-                    const ctx = c.getContext('2d');
-                    let offset = 0;
-                    
-                    const draw = () => {
-                        const w = c.width = c.parentElement.offsetWidth;
-                        const h = c.height = c.parentElement.offsetHeight;
-                        offset -= 1; // Scroll speed
-
-                        ctx.clearRect(0,0,w,h);
-                        
-                        // Grid Lines
-                        ctx.strokeStyle = '#222';
-                        ctx.lineWidth = 1;
-                        ctx.beginPath();
-                        for(let x = offset % 50; x < w; x+=50) { ctx.moveTo(x,0); ctx.lineTo(x,h); }
-                        ctx.stroke();
-
-                        // Sine Wave (Simulated Traffic)
-                        ctx.beginPath();
-                        ctx.strokeStyle = '#4cc9ac'; // Teal
-                        ctx.lineWidth = 2;
-                        for(let x = 0; x < w; x++) {
-                            const y = h/2 + Math.sin((x - offset) * 0.02) * 50 + Math.cos((x - offset) * 0.05) * 20;
-                            x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-                        }
-                        ctx.stroke();
-                        
-                        requestAnimationFrame(draw);
-                    };
-                    draw();
+            UI: {
+                toggleWS() { App.UI.toast('Environment: Production (Locked)'); },
+                toast(msg) {
+                    const c = document.getElementById('toast-layer');
+                    const el = document.createElement('div');
+                    el.className = "glass px-4 py-3 border-l-2 border-primary text-white rounded shadow-lg animate-slide-in flex items-center gap-3 w-64";
+                    el.innerHTML = `<i class="ph-bold ph-info"></i> <span class="text-xs">${msg}</span>`;
+                    c.appendChild(el);
+                    setTimeout(() => el.remove(), 3000);
                 }
             },
 
-            // --- PIPELINES (With Live Terminal) ---
-            Pipelines: {
-                jobs: [
-                    { id: 'job-842', name: 'api-core-deploy', status: 'running' },
-                    { id: 'job-841', name: 'frontend-build', status: 'success' },
-                    { id: 'job-840', name: 'db-migration', status: 'failed' }
+            // --- MODULES ---
+            Orchestration: {
+                data: [
+                    {n:'GDPR-Data-Scrubber', s:'success', t:'Schedule (Daily)', d:'4m 12s'},
+                    {n:'Invoice-Redaction-AI', s:'running', t:'Webhook', d:'24s'},
+                    {n:'Employee-Offboard-V2', s:'success', t:'Manual', d:'1m 05s'}
                 ],
-                activeInterval: null,
-                
-                init() {
-                    this.renderList();
-                },
-                
-                renderList() {
-                    const el = document.getElementById('job-list');
-                    el.innerHTML = this.jobs.map(job => `
-                        <div onclick="App.Pipelines.select('${job.id}')" class="p-3 rounded border border-border bg-surfaceHighlight/30 hover:bg-surfaceHighlight cursor-pointer transition-colors group">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="text-xs font-bold text-text group-hover:text-primary transition-colors">${job.name}</span>
-                                ${this.badge(job.status)}
-                            </div>
-                            <div class="text-xxs text-textDim font-mono">ID: ${job.id} • git:main</div>
-                        </div>
-                    `).join('');
-                },
-                
-                badge(s) {
-                    if (s==='running') return `<span class="flex items-center gap-1 text-[10px] text-blue-400"><i class="ph-bold ph-spinner animate-spin"></i> RUNNING</span>`;
-                    if (s==='success') return `<span class="text-[10px] text-green-400">PASS</span>`;
-                    return `<span class="text-[10px] text-red-400">FAIL</span>`;
-                },
-                
-                addJob() {
-                    this.jobs.unshift({ id: `job-${Math.floor(Math.random()*9000)}`, name: 'manual-trigger', status: 'running' });
-                    this.renderList();
-                    this.select(this.jobs[0].id);
-                },
-
-                select(id) {
-                    // Start Fake Terminal Stream
-                    const term = document.getElementById('terminal-output');
-                    document.getElementById('term-title').innerText = `${id} : logs`;
-                    term.innerHTML = `<div class="text-blue-400">> Initializing worker for ${id}...</div>`;
-                    
-                    if(this.activeInterval) clearInterval(this.activeInterval);
-                    
-                    const logs = [
-                        "Cloning repository...", "Restoring npm cache...", "Running tests (Unit)...",
-                        "Building Docker image...", "Pushing to registry...", "Verifying health check...",
-                        "Done in 4.2s"
-                    ];
-                    let i = 0;
-                    
-                    this.activeInterval = setInterval(() => {
-                        if(i >= logs.length) return clearInterval(this.activeInterval);
-                        const line = document.createElement('div');
-                        line.className = "animate-fade-in";
-                        line.innerHTML = `<span class="text-textDim text-[10px] mr-2">${new Date().toLocaleTimeString()}</span> ${logs[i]}`;
-                        term.appendChild(line);
-                        term.scrollTop = term.scrollHeight;
-                        i++;
-                    }, 800);
-                }
-            },
-
-            // --- VAULT (Secrets) ---
-            Vault: {
-                secrets: [
-                    { k: 'STRIPE_SK', v: 'sk_live_51J...' },
-                    { k: 'AWS_SECRET', v: 'wJalrXUtnFEM...' }
-                ],
-                init() {
-                    const el = document.getElementById('vault-rows');
-                    el.innerHTML = this.secrets.map((s, i) => `
-                        <tr class="group hover:bg-white/[0.02] transition-colors">
-                            <td class="px-6 py-4 font-mono text-text">${s.k}</td>
-                            <td class="px-6 py-4 text-textDim text-xs"><span class="bg-white/5 px-2 py-1 rounded">Production</span></td>
-                            <td class="px-6 py-4 font-mono text-textDim text-xs">
-                                <span id="secret-${i}" class="blur-sm select-none transition-all duration-300">••••••••••••••••</span>
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <button onclick="App.Vault.toggle(${i})" class="text-textDim hover:text-primary mr-2"><i class="ph-bold ph-eye"></i></button>
-                                <button class="text-textDim hover:text-white"><i class="ph-bold ph-copy"></i></button>
-                            </td>
+                render() {
+                    document.getElementById('orch-list').innerHTML = this.data.map(i => `
+                        <tr class="hover:bg-white/5 transition-colors group cursor-pointer">
+                            <td class="px-6 py-4">${i.s==='running' ? '<span class="text-blue-400 font-mono text-[10px] animate-pulse">● PROCESSING</span>' : '<span class="text-green-400 font-mono text-[10px]">● COMPLETE</span>'}</td>
+                            <td class="px-6 py-4 font-bold text-slate-300 group-hover:text-white">${i.n}</td>
+                            <td class="px-6 py-4 text-textDim">${i.t}</td>
+                            <td class="px-6 py-4 text-textDim font-mono text-right">${i.d}</td>
                         </tr>
                     `).join('');
                 },
-                toggle(i) {
-                    const el = document.getElementById(`secret-${i}`);
-                    if(el.classList.contains('blur-sm')) {
-                        el.classList.remove('blur-sm');
-                        el.innerText = this.secrets[i].v;
-                        el.classList.add('text-primary');
-                    } else {
-                        el.classList.add('blur-sm');
-                        el.innerText = '••••••••••••••••';
-                        el.classList.remove('text-primary');
+                trigger() {
+                    App.UI.toast('Workflow Initiated: Compliance-Check');
+                    this.data.unshift({n:'Compliance-Check-Lite', s:'running', t:'Manual', d:'0s'});
+                    this.render();
+                }
+            },
+
+            Identity: {
+                render() {
+                    const users = [
+                        {n:'Admin User', e:'admin@athash.tech', r:'Super Admin'},
+                        {n:'Service Acct', e:'svc_runner_01', r:'Bot (Read Only)'},
+                        {n:'Jane Doe', e:'jane@athash.tech', r:'Developer'},
+                        {n:'John Smith', e:'john@athash.tech', r:'Auditor'}
+                    ];
+                    document.getElementById('iam-list').innerHTML = users.map(u => `
+                        <div class="glass p-4 rounded-lg flex items-center justify-between border border-border">
+                            <div class="flex items-center gap-4">
+                                <div class="w-8 h-8 rounded-full bg-surfaceHighlight border border-white/10 flex items-center justify-center text-xs font-bold text-textDim">${u.n.charAt(0)}</div>
+                                <div><div class="font-bold text-text text-xs">${u.n}</div><div class="text-[10px] text-textDim font-mono">${u.e}</div></div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span class="text-[10px] bg-white/5 px-2 py-1 rounded text-textDim border border-white/5">${u.r}</span>
+                                <button class="text-textDim hover:text-danger" onclick="App.UI.toast('Revocation Protocol Started')"><i class="ph-bold ph-trash"></i></button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            },
+
+            Vault: {
+                render() {
+                    const items = [{k:'STRIPE_PROD_SK', e:'Production'}, {k:'OPENAI_API_KEY', e:'Global'}, {k:'AWS_SECRET_ID', e:'Production'}];
+                    document.getElementById('vault-grid').innerHTML = items.map((i, idx) => `
+                        <div class="glass p-4 rounded-lg border border-border flex items-center justify-between group">
+                            <div class="flex items-center gap-4">
+                                <i class="ph-fill ph-lock-key text-textDim group-hover:text-primary transition-colors"></i>
+                                <div><div class="font-mono text-xs text-text font-bold">${i.k}</div><div class="text-[10px] text-textDim uppercase">${i.e}</div></div>
+                            </div>
+                            <div class="font-mono text-xs text-textDim blur-sm select-none group-hover:blur-none transition-all cursor-pointer">sk_live_...4829</div>
+                        </div>
+                    `).join('');
+                }
+            },
+
+            Canvas: {
+                initTopology() {
+                    const c = document.getElementById('topology-canvas');
+                    const ctx = c.getContext('2d');
+                    
+                    const resize = () => { c.width = c.parentElement.offsetWidth; c.height = c.parentElement.offsetHeight; };
+                    window.addEventListener('resize', resize); setTimeout(resize, 100);
+
+                    const nodes = [{x:0.5,y:0.5,c:'#3B82F6'},{x:0.3,y:0.3,c:'#64748B'},{x:0.7,y:0.3,c:'#64748B'},{x:0.5,y:0.7,c:'#64748B'}];
+                    
+                    function animate() {
+                        if(c.width===0) return requestAnimationFrame(animate);
+                        ctx.clearRect(0,0,c.width,c.height);
+                        
+                        // Connections
+                        ctx.beginPath(); ctx.strokeStyle='rgba(255,255,255,0.05)';
+                        nodes.slice(1).forEach(n => { ctx.moveTo(nodes[0].x*c.width, nodes[0].y*c.height); ctx.lineTo(n.x*c.width, n.y*c.height); });
+                        ctx.stroke();
+
+                        // Nodes
+                        nodes.forEach((n,i) => {
+                            const cx = n.x*c.width; const cy = n.y*c.height + Math.sin(Date.now()/1000+i)*5;
+                            ctx.beginPath(); ctx.fillStyle=n.c; ctx.arc(cx,cy,i===0?6:4,0,Math.PI*2); ctx.fill();
+                            if(i===0) { // Core Pulse
+                                ctx.beginPath(); ctx.strokeStyle='rgba(59,130,246,0.2)'; ctx.arc(cx,cy,20+Math.sin(Date.now()/500)*5,0,Math.PI*2); ctx.stroke();
+                            }
+                        });
+                        requestAnimationFrame(animate);
                     }
+                    animate();
                 }
             }
         };
 
-        // Boot
         document.addEventListener('DOMContentLoaded', () => App.init());
     </script>
 </body>
