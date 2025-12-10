@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AtHash OS | Zero-Trust Infrastructure</title>
+    <title>AtHash | Zaziza Guardian</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -14,14 +14,14 @@
             theme: {
                 extend: {
                     colors: {
-                        background: '#030712', // Darker, colder background
-                        surface: '#0B1120',    // Navy-tinted surface
+                        background: '#030712',
+                        surface: '#0B1120',
                         surfaceHighlight: '#162032',
                         border: '#1E293B',
-                        primary: '#3B82F6',    // Trust Blue
-                        secondary: '#10B981',  // Success Emerald
-                        warning: '#F59E0B',    // Alert Orange
-                        danger: '#EF4444',     // Critical Red
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        warning: '#F59E0B',
+                        danger: '#EF4444',
                         text: '#F8FAFC',
                         textDim: '#64748B'
                     },
@@ -29,13 +29,9 @@
                         sans: ['"Inter"', 'system-ui', 'sans-serif'],
                         mono: ['"JetBrains Mono"', 'monospace'],
                     },
-                    boxShadow: {
-                        'glow': '0 0 20px rgba(59, 130, 246, 0.1)',
-                        'modal': '0 25px 50px -12px rgba(0, 0, 0, 0.7)'
-                    },
                     animation: {
                         'slide-in': 'slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                     },
                     keyframes: {
                         slideIn: { '0%': { opacity: 0, transform: 'translateY(10px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } }
@@ -55,17 +51,22 @@
             mask-image: radial-gradient(circle at 50% 50%, black 40%, transparent 100%);
         }
 
-        .glass { background: rgba(11, 17, 32, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .glass { background: rgba(11, 17, 32, 0.9); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
         .hidden-force { display: none !important; }
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
         
-        /* Status Indicators */
         .status-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
         .status-dot.active { background-color: #10B981; box-shadow: 0 0 8px rgba(16, 185, 129, 0.4); }
-        
-        /* Typography */
         .h-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: #64748B; font-weight: 600; }
+        
+        /* Scan Line Effect */
+        .scanning-line {
+            position: absolute; width: 100%; height: 2px; background: #3B82F6;
+            box-shadow: 0 0 10px #3B82F6; top: 0; left: 0;
+            animation: scan 2s linear infinite; display: none;
+        }
+        @keyframes scan { 0% { top: 0%; opacity: 0; } 50% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
     </style>
 </head>
 <body class="font-sans antialiased text-sm select-none">
@@ -73,29 +74,25 @@
     <div class="fixed inset-0 bg-grid z-0 pointer-events-none"></div>
 
     <div id="toast-layer" class="fixed bottom-6 right-6 z-[100] flex flex-col gap-2 pointer-events-none"></div>
-    <div id="modal-overlay" class="hidden-force fixed inset-0 z-[60] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-300"></div>
 
-    <div id="view-login" class="relative z-10 w-full h-screen flex flex-col items-center justify-center transition-all duration-500">
-        <div class="w-full max-w-md p-8 glass rounded-xl shadow-2xl space-y-8 animate-slide-in border border-border">
-            <div class="flex flex-col items-center gap-4">
-                <div class="w-12 h-12 bg-surfaceHighlight rounded-lg flex items-center justify-center border border-white/5 text-primary shadow-glow">
-                    <i class="ph-bold ph-shield-check text-2xl"></i>
+    <div id="view-login" class="relative z-10 w-full h-screen flex flex-col items-center justify-center transition-all duration-500 px-4">
+        <div class="w-full max-w-md p-8 glass rounded-xl shadow-2xl space-y-6 animate-slide-in border border-border">
+            <div class="flex flex-col items-center gap-4 border-b border-border pb-6">
+                <div class="w-14 h-14 bg-surfaceHighlight rounded-xl flex items-center justify-center border border-white/5 text-primary shadow-glow">
+                    <i class="ph-bold ph-shield-check text-3xl"></i>
                 </div>
                 <div class="text-center">
-                    <h1 class="text-xl font-bold text-text tracking-tight">AtHash<span class="text-primary">_Technologies</span></h1>
-                    <p class="text-textDim text-xs mt-2 font-mono">Zero-Trust Infrastructure Access</p>
+                    <h1 class="text-2xl font-bold text-text tracking-tight">AtHash<span class="text-primary">_Technologies</span></h1>
+                    <p class="text-textDim text-xs mt-2 font-mono uppercase tracking-widest">The Guardian of Zaziza Holdings</p>
                 </div>
             </div>
-            <div class="space-y-3">
-                <button onclick="App.Auth.login()" class="w-full py-3 bg-primary text-white font-semibold rounded hover:bg-blue-600 transition-all shadow-glow flex items-center justify-center gap-2 group text-sm">
-                    <i class="ph-bold ph-fingerprint"></i> Authenticate via SSO
+            <div class="space-y-3 pt-2">
+                <button onclick="App.Auth.login()" class="w-full py-3 bg-primary text-white font-semibold rounded hover:bg-blue-600 transition-all flex items-center justify-center gap-2 group text-sm shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+                    <i class="ph-bold ph-fingerprint"></i> Verify Identity
                 </button>
             </div>
-            <div class="text-center pt-4 border-t border-border">
-                <div class="inline-flex items-center gap-2 px-2 py-1 rounded bg-green-500/10 border border-green-500/10">
-                    <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                    <span class="text-[10px] font-mono text-green-400">SYSTEM OPERATIONAL</span>
-                </div>
+            <div class="text-center text-[10px] text-textDim font-mono pt-4">
+                System Status: <span class="text-green-400">ONLINE</span>
             </div>
         </div>
     </div>
@@ -103,40 +100,53 @@
     <div id="view-app" class="hidden-force fixed inset-0 z-20 bg-background flex">
         
         <aside class="w-[260px] bg-surface border-r border-border flex flex-col flex-shrink-0 z-30">
-            <div class="h-14 flex items-center px-4 border-b border-border gap-3">
-                <div class="w-6 h-6 bg-primary rounded flex items-center justify-center text-white text-xs font-bold">AH</div>
-                <span class="font-bold text-text text-sm">AtHash Inc.</span>
+            <div class="h-16 flex items-center px-4 border-b border-border gap-3">
+                <div class="w-8 h-8 bg-primary rounded flex items-center justify-center text-white text-xs font-bold">AH</div>
+                <div>
+                    <div class="font-bold text-text text-sm">AtHash Inc.</div>
+                    <div class="text-[10px] text-textDim">Zaziza Security Core</div>
+                </div>
             </div>
 
             <div class="p-3">
-                <button onclick="App.UI.toggleWS()" class="w-full flex items-center gap-3 px-3 py-2 bg-surfaceHighlight border border-border rounded hover:border-white/10 transition-colors text-left group">
-                    <div id="ws-dot" class="status-dot active"></div>
+                <button class="w-full flex items-center gap-3 px-3 py-2 bg-surfaceHighlight border border-border rounded hover:border-white/10 transition-colors text-left group">
+                    <div class="status-dot active"></div>
                     <div class="flex-1 overflow-hidden">
                         <div class="text-xs font-bold text-text">Production</div>
-                        <div class="text-[10px] text-textDim font-mono">Secured Zone</div>
+                        <div class="text-[10px] text-textDim font-mono">aws-af-south-1</div>
                     </div>
-                    <i class="ph-bold ph-caret-down text-textDim group-hover:text-text"></i>
                 </button>
             </div>
 
-            <nav class="flex-1 px-2 space-y-0.5 overflow-y-auto">
-                <div class="px-3 py-2 h-label mt-2">Infrastructure</div>
+            <div class="px-4 py-3 border-y border-border/50 bg-black/20">
+                <div class="h-label mb-2 text-textDim/50">Zaziza Digital Triad</div>
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center text-[10px]">
+                        <span class="text-textDim">Zaziza Tech</span>
+                        <span class="text-green-400">● Connected</span>
+                    </div>
+                    <div class="flex justify-between items-center text-[10px]">
+                        <span class="text-textDim">DeltaPro</span>
+                        <span class="text-green-400">● Connected</span>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="flex-1 px-2 space-y-0.5 overflow-y-auto mt-2">
+                <div class="px-3 py-2 h-label">The Guardian</div>
                 <button onclick="App.Router.go('overview')" id="nav-overview" class="w-full flex items-center gap-3 px-3 py-2 rounded text-textDim hover:text-text hover:bg-white/5 transition-colors text-xs font-medium group">
                     <i class="ph ph-squares-four text-lg"></i> Command Center
                 </button>
                 <button onclick="App.Router.go('orchestration')" id="nav-orchestration" class="w-full flex items-center gap-3 px-3 py-2 rounded text-textDim hover:text-text hover:bg-white/5 transition-colors text-xs font-medium group">
-                    <i class="ph ph-git-merge text-lg"></i> Orchestration
+                    <i class="ph ph-git-merge text-lg"></i> Zero-Trust Pipelines
                 </button>
                 
-                <div class="px-3 py-2 h-label mt-4">Security & Governance</div>
-                <button onclick="App.Router.go('identity')" id="nav-identity" class="w-full flex items-center gap-3 px-3 py-2 rounded text-textDim hover:text-text hover:bg-white/5 transition-colors text-xs font-medium group">
-                    <i class="ph ph-users text-lg"></i> Identity (IAM)
-                </button>
-                <button onclick="App.Router.go('vault')" id="nav-vault" class="w-full flex items-center gap-3 px-3 py-2 rounded text-textDim hover:text-text hover:bg-white/5 transition-colors text-xs font-medium group">
-                    <i class="ph ph-lock-key text-lg"></i> Sovereign Vault
+                <div class="px-3 py-2 h-label mt-4">Compliance</div>
+                <button onclick="App.Router.go('compliance')" id="nav-compliance" class="w-full flex items-center gap-3 px-3 py-2 rounded text-textDim hover:text-text hover:bg-white/5 transition-colors text-xs font-medium group">
+                    <i class="ph ph-shield-check text-lg"></i> POPIA Monitor
                 </button>
                 <button onclick="App.Router.go('audit')" id="nav-audit" class="w-full flex items-center gap-3 px-3 py-2 rounded text-textDim hover:text-text hover:bg-white/5 transition-colors text-xs font-medium group">
-                    <i class="ph ph-scroll text-lg"></i> Audit Ledger
+                    <i class="ph ph-list-checks text-lg"></i> Immutable Ledger
                 </button>
             </nav>
 
@@ -148,15 +158,14 @@
         </aside>
 
         <main class="flex-1 flex flex-col min-w-0 bg-background relative overflow-hidden">
-            <header class="h-14 bg-background/90 backdrop-blur border-b border-border flex items-center justify-between px-6 z-20">
+            <header class="h-16 bg-background/90 backdrop-blur border-b border-border flex items-center justify-between px-6 z-20">
                 <div class="flex items-center gap-2 text-xs text-textDim font-mono">
                     <span class="text-primary">athash</span><span>/</span><span id="page-title" class="text-text">command-center</span>
                 </div>
                 <div class="flex items-center gap-4">
-                    <div class="flex items-center gap-2 px-2 py-1 rounded bg-surfaceHighlight border border-border">
-                        <span class="status-dot bg-green-500"></span>
-                        <span class="text-[10px] text-textDim font-mono">SOC2 COMPLIANT</span>
-                    </div>
+                    <button onclick="App.UI.triggerScan()" id="scan-btn" class="flex items-center gap-2 px-3 py-1.5 rounded bg-primary/10 border border-primary/20 hover:bg-primary/20 transition-colors text-xs text-primary font-bold">
+                        <i class="ph-bold ph-radar"></i> Run Threat Scan
+                    </button>
                 </div>
             </header>
 
@@ -164,27 +173,28 @@
                 
                 <div id="page-overview" class="page space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="p-5 rounded-lg border border-border bg-surfaceHighlight/30">
-                            <div class="flex justify-between items-start mb-3"><span class="h-label">Compliance Score</span><i class="ph-fill ph-shield-check text-secondary"></i></div>
-                            <div class="text-2xl font-bold text-text font-mono">98.5%</div>
-                            <div class="text-[10px] text-textDim mt-1">GDPR & SOC2 Checks Passed</div>
+                        <div class="p-5 rounded-lg border border-border bg-surfaceHighlight/30 relative overflow-hidden">
+                            <div class="flex justify-between items-start mb-3"><span class="h-label">Guardian Status</span><i class="ph-fill ph-shield-check text-secondary"></i></div>
+                            <div class="text-2xl font-bold text-text font-mono">Active</div>
+                            <div class="text-[10px] text-textDim mt-1">Zero-Trust Enforced</div>
+                            <div id="scan-line" class="scanning-line"></div>
                         </div>
                         <div class="p-5 rounded-lg border border-border bg-surfaceHighlight/30">
-                            <div class="flex justify-between items-start mb-3"><span class="h-label">Active Nodes</span><i class="ph-fill ph-circles-three text-primary"></i></div>
-                            <div class="text-2xl font-bold text-text font-mono">24/24</div>
-                            <div class="text-[10px] text-green-400 mt-1">100% Uptime (30d)</div>
+                            <div class="flex justify-between items-start mb-3"><span class="h-label">PII Redacted</span><i class="ph-fill ph-eye-slash text-warning"></i></div>
+                            <div class="text-2xl font-bold text-text font-mono" id="pii-counter">1,204</div>
+                            <div class="text-[10px] text-textDim mt-1">SA ID Numbers Masked</div>
                         </div>
-                        <div class="p-5 rounded-lg border border-border bg-surfaceHighlight/30">
-                            <div class="flex justify-between items-start mb-3"><span class="h-label">Threats Blocked</span><i class="ph-fill ph-warning-octagon text-warning"></i></div>
-                            <div class="text-2xl font-bold text-text font-mono">14</div>
-                            <div class="text-[10px] text-textDim mt-1">Last: Unauthorized API Access</div>
+                         <div class="p-5 rounded-lg border border-border bg-surfaceHighlight/30">
+                            <div class="flex justify-between items-start mb-3"><span class="h-label">Threat Level</span><i class="ph-fill ph-warning-octagon text-textDim" id="threat-icon"></i></div>
+                            <div class="text-2xl font-bold text-text font-mono" id="threat-text">Low</div>
+                            <div class="text-[10px] text-textDim mt-1">AI Sentinel Monitoring</div>
                         </div>
                     </div>
 
                     <div class="rounded-lg border border-border bg-surfaceHighlight/20 overflow-hidden flex flex-col h-[450px] relative">
                         <div class="absolute top-4 left-4 z-10">
-                            <h3 class="text-sm font-bold text-text">Infrastructure Topology</h3>
-                            <p class="text-[10px] text-textDim">Real-time Node Status</p>
+                            <h3 class="text-sm font-bold text-text">Zero-Trust Topology</h3>
+                            <p class="text-[10px] text-textDim">Real-time Data Flow (Cape Town Node)</p>
                         </div>
                         <canvas id="topology-canvas" class="w-full h-full cursor-crosshair opacity-60"></canvas>
                     </div>
@@ -192,187 +202,173 @@
 
                 <div id="page-orchestration" class="page hidden-force space-y-6">
                     <div class="flex justify-between items-center">
-                        <h2 class="font-bold text-text">Active Orchestrations</h2>
-                        <button onclick="App.Orchestration.trigger()" class="px-3 py-1.5 bg-primary/10 border border-primary/50 text-primary hover:bg-primary hover:text-white transition-colors text-xs font-bold rounded flex items-center gap-2">
-                            <i class="ph-bold ph-play"></i> Execute Workflow
+                        <h2 class="font-bold text-text">Active Pipelines</h2>
+                        <button onclick="App.Orchestration.add()" class="px-3 py-1.5 bg-white/5 border border-white/10 text-text hover:bg-white/10 transition-colors text-xs font-bold rounded flex items-center gap-2">
+                            <i class="ph-bold ph-plus"></i> New Pipeline
                         </button>
                     </div>
                     <div class="rounded-lg border border-border overflow-hidden bg-surfaceHighlight/30">
                         <table class="w-full text-left text-xs">
                             <thead class="bg-surfaceHighlight border-b border-border text-textDim uppercase font-semibold">
-                                <tr><th class="px-6 py-3">Status</th><th class="px-6 py-3">Workflow</th><th class="px-6 py-3">Trigger</th><th class="px-6 py-3 text-right">Duration</th></tr>
+                                <tr><th class="px-6 py-3">State</th><th class="px-6 py-3">Pipeline Name</th><th class="px-6 py-3">Guardian Action</th></tr>
                             </thead>
-                            <tbody class="divide-y divide-border" id="orch-list">
-                                </tbody>
+                            <tbody class="divide-y divide-border" id="orch-list"></tbody>
                         </table>
                     </div>
                 </div>
 
-                <div id="page-identity" class="page hidden-force space-y-6">
-                    <div class="flex justify-between items-center">
-                        <h2 class="font-bold text-text">Identity Governance (IAM)</h2>
-                        <span class="text-xs text-textDim bg-surfaceHighlight px-2 py-1 rounded border border-border">4 Active Users</span>
+                <div id="page-compliance" class="page hidden-force space-y-6">
+                    <h2 class="font-bold text-text">South African Governance</h2>
+                    <div class="grid gap-3">
+                        <div class="glass p-4 rounded-lg border border-border flex justify-between items-center">
+                            <div class="flex items-center gap-4">
+                                <div class="w-8 h-8 rounded bg-primary/10 flex items-center justify-center text-primary"><i class="ph-bold ph-map-pin"></i></div>
+                                <div><div class="font-bold text-text text-xs">POPIA Data Residency</div><div class="text-[10px] text-textDim">Enforced Region: AWS Cape Town</div></div>
+                            </div>
+                            <span class="text-[10px] bg-green-500/10 text-green-400 px-2 py-1 rounded border border-green-500/20">COMPLIANT</span>
+                        </div>
+                        <div class="glass p-4 rounded-lg border border-border flex justify-between items-center">
+                            <div class="flex items-center gap-4">
+                                <div class="w-8 h-8 rounded bg-warning/10 flex items-center justify-center text-warning"><i class="ph-bold ph-chart-bar"></i></div>
+                                <div><div class="font-bold text-text text-xs">B-BBEE Auto-Reporting</div><div class="text-[10px] text-textDim">DeltaPro Data Sync Active</div></div>
+                            </div>
+                            <span class="text-[10px] bg-green-500/10 text-green-400 px-2 py-1 rounded border border-green-500/20">LEVEL 1 READY</span>
+                        </div>
                     </div>
-                    <div class="grid gap-3" id="iam-list">
+                </div>
+
+                <div id="page-audit" class="page hidden-force space-y-6">
+                    <div class="flex justify-between items-center">
+                         <h2 class="font-bold text-text">Immutable Ledger (Blockchain Backed)</h2>
+                         <button class="text-xs text-textDim hover:text-white border border-border px-3 py-1 rounded bg-surfaceHighlight flex items-center gap-2"><i class="ph-bold ph-hash"></i> Verify Hash</button>
+                    </div>
+                    <div class="glass p-4 rounded-lg border border-border font-mono text-[10px] text-textDim space-y-2 h-[400px] overflow-y-auto" id="audit-log">
+                        <div class="flex gap-4 border-b border-border/50 pb-2 mb-2 text-xs font-bold text-text"><span class="w-32">BLOCK HASH</span><span class="w-24">TIMESTAMP</span><span>ACTION</span></div>
                         </div>
                 </div>
-
-                <div id="page-vault" class="page hidden-force space-y-6">
-                    <div class="flex justify-between items-center">
-                        <h2 class="font-bold text-text">Sovereign Data Vault</h2>
-                        <button onclick="App.UI.toast('Audit Log Downloaded')" class="text-xs text-textDim hover:text-white flex items-center gap-2"><i class="ph ph-download"></i> Export Logs</button>
-                    </div>
-                    <div class="grid gap-3" id="vault-grid"></div>
-                </div>
-
             </div>
         </main>
     </div>
 
     <script>
         const App = {
-            init() {
-                this.Canvas.initTopology();
+            init() { 
+                this.Canvas.init(); 
                 this.Orchestration.render();
-                this.Identity.render();
-                this.Vault.render();
+                this.Audit.init();
             },
-
+            Auth: {
+                login() {
+                    document.body.style.cursor = 'wait';
+                    event.currentTarget.innerHTML = `<i class="ph-bold ph-spinner animate-spin"></i> Verifying Credentials...`;
+                    setTimeout(() => {
+                        document.getElementById('view-login').classList.add('hidden-force');
+                        document.getElementById('view-app').classList.remove('hidden-force');
+                        App.Router.go('overview');
+                        document.body.style.cursor = 'default';
+                        App.UI.toast('Welcome, Administrator');
+                    }, 1200);
+                },
+                logout() { location.reload(); }
+            },
             Router: {
                 go(page) {
                     document.querySelectorAll('.page').forEach(el => el.classList.add('hidden-force'));
                     document.getElementById(`page-${page}`).classList.remove('hidden-force');
-                    
-                    document.querySelectorAll('[id^="nav-"]').forEach(el => {
-                        el.classList.remove('bg-white/5', 'text-text');
-                        el.classList.add('text-textDim');
-                    });
-                    
+                    document.querySelectorAll('[id^="nav-"]').forEach(el => { el.classList.remove('bg-white/5', 'text-text'); el.classList.add('text-textDim'); });
                     const active = document.getElementById(`nav-${page}`);
                     if(active) { active.classList.add('bg-white/5', 'text-text'); active.classList.remove('text-textDim'); }
-                    
                     document.getElementById('page-title').innerText = page;
                 }
             },
-
-            Auth: {
-                login() {
-                    document.body.style.cursor = 'wait';
-                    const btn = event.currentTarget;
-                    btn.innerHTML = `<i class="ph-bold ph-spinner animate-spin"></i> Verifying...`;
-                    setTimeout(() => {
-                        document.getElementById('view-login').style.opacity = '0';
-                        setTimeout(() => {
-                            document.getElementById('view-login').classList.add('hidden-force');
-                            document.getElementById('view-app').classList.remove('hidden-force');
-                            App.Router.go('overview');
-                            document.body.style.cursor = 'default';
-                        }, 500);
-                    }, 1000);
-                },
-                logout() { location.reload(); }
-            },
-
             UI: {
-                toggleWS() { App.UI.toast('Environment: Production (Locked)'); },
-                toast(msg) {
+                toast(msg, type='info') {
                     const c = document.getElementById('toast-layer');
                     const el = document.createElement('div');
-                    el.className = "glass px-4 py-3 border-l-2 border-primary text-white rounded shadow-lg animate-slide-in flex items-center gap-3 w-64";
+                    const color = type==='danger' ? 'border-red-500 text-red-400' : 'border-primary text-white';
+                    el.className = `glass px-4 py-3 border-l-2 ${color} rounded shadow-lg animate-slide-in flex items-center gap-3 w-64`;
                     el.innerHTML = `<i class="ph-bold ph-info"></i> <span class="text-xs">${msg}</span>`;
                     c.appendChild(el);
                     setTimeout(() => el.remove(), 3000);
+                },
+                triggerScan() {
+                    const btn = document.getElementById('scan-btn');
+                    const line = document.getElementById('scan-line');
+                    const icon = document.getElementById('threat-icon');
+                    const text = document.getElementById('threat-text');
+                    
+                    btn.classList.add('bg-primary', 'text-white');
+                    btn.innerHTML = `<i class="ph-bold ph-spinner animate-spin"></i> Scanning...`;
+                    line.style.display = 'block';
+                    
+                    setTimeout(() => {
+                        btn.classList.remove('bg-primary', 'text-white');
+                        btn.innerHTML = `<i class="ph-bold ph-radar"></i> Run Threat Scan`;
+                        line.style.display = 'none';
+                        icon.className = "ph-fill ph-check-circle text-secondary";
+                        text.innerText = "Secure";
+                        text.classList.add('text-secondary');
+                        App.UI.toast("Scan Complete: Zero Threats Found");
+                        App.Audit.log("System Scan", "Verified Integrity of 12 Nodes");
+                    }, 2500);
                 }
             },
-
-            // --- MODULES ---
             Orchestration: {
                 data: [
-                    {n:'GDPR-Data-Scrubber', s:'success', t:'Schedule (Daily)', d:'4m 12s'},
-                    {n:'Invoice-Redaction-AI', s:'running', t:'Webhook', d:'24s'},
-                    {n:'Employee-Offboard-V2', s:'success', t:'Manual', d:'1m 05s'}
+                    {n:'HR_Onboarding_Bot', s:'success', c:'PII Redacted'},
+                    {n:'Finance_Recon_ZA', s:'running', c:'Scanning Payload...'},
+                    {n:'Legal_Doc_Parser', s:'success', c:'Encryption Verified'}
                 ],
                 render() {
                     document.getElementById('orch-list').innerHTML = this.data.map(i => `
-                        <tr class="hover:bg-white/5 transition-colors group cursor-pointer">
-                            <td class="px-6 py-4">${i.s==='running' ? '<span class="text-blue-400 font-mono text-[10px] animate-pulse">● PROCESSING</span>' : '<span class="text-green-400 font-mono text-[10px]">● COMPLETE</span>'}</td>
-                            <td class="px-6 py-4 font-bold text-slate-300 group-hover:text-white">${i.n}</td>
-                            <td class="px-6 py-4 text-textDim">${i.t}</td>
-                            <td class="px-6 py-4 text-textDim font-mono text-right">${i.d}</td>
+                        <tr class="hover:bg-white/5 transition-colors">
+                            <td class="px-6 py-4">${i.s==='running'?'<span class="text-blue-400 font-mono text-[10px] animate-pulse">● RUNNING</span>':'<span class="text-green-400 font-mono text-[10px]">● SECURE</span>'}</td>
+                            <td class="px-6 py-4 font-bold text-slate-300">${i.n}</td>
+                            <td class="px-6 py-4 text-textDim font-mono text-xs">${i.c}</td>
                         </tr>
                     `).join('');
                 },
-                trigger() {
-                    App.UI.toast('Workflow Initiated: Compliance-Check');
-                    this.data.unshift({n:'Compliance-Check-Lite', s:'running', t:'Manual', d:'0s'});
+                add() {
+                    App.UI.toast("Pipeline Created: Data_Sync_v2");
+                    this.data.unshift({n:'Data_Sync_v2', s:'running', c:'Initializing Guardian...'});
                     this.render();
+                    App.Audit.log("Orchestration", "Created new pipeline 'Data_Sync_v2'");
                 }
             },
-
-            Identity: {
-                render() {
-                    const users = [
-                        {n:'Admin User', e:'admin@athash.tech', r:'Super Admin'},
-                        {n:'Service Acct', e:'svc_runner_01', r:'Bot (Read Only)'},
-                        {n:'Jane Doe', e:'jane@athash.tech', r:'Developer'},
-                        {n:'John Smith', e:'john@athash.tech', r:'Auditor'}
-                    ];
-                    document.getElementById('iam-list').innerHTML = users.map(u => `
-                        <div class="glass p-4 rounded-lg flex items-center justify-between border border-border">
-                            <div class="flex items-center gap-4">
-                                <div class="w-8 h-8 rounded-full bg-surfaceHighlight border border-white/10 flex items-center justify-center text-xs font-bold text-textDim">${u.n.charAt(0)}</div>
-                                <div><div class="font-bold text-text text-xs">${u.n}</div><div class="text-[10px] text-textDim font-mono">${u.e}</div></div>
-                            </div>
-                            <div class="flex items-center gap-4">
-                                <span class="text-[10px] bg-white/5 px-2 py-1 rounded text-textDim border border-white/5">${u.r}</span>
-                                <button class="text-textDim hover:text-danger" onclick="App.UI.toast('Revocation Protocol Started')"><i class="ph-bold ph-trash"></i></button>
-                            </div>
-                        </div>
-                    `).join('');
+            Audit: {
+                log(actor, action) {
+                    const el = document.getElementById('audit-log');
+                    const hash = '0x' + Math.random().toString(16).substr(2, 8) + '...';
+                    const time = new Date().toISOString().slice(0, 19).replace('T', ' ');
+                    
+                    const row = document.createElement('div');
+                    row.className = "flex gap-4 animate-slide-in";
+                    row.innerHTML = `<span class="w-32 text-primary">${hash}</span><span class="w-24">${time}</span><span class="text-white">${action}</span>`;
+                    
+                    el.prepend(row);
+                },
+                init() {
+                    this.log("System", "Guardian Module Initialized");
+                    this.log("Auto-Bot", "Redacted 14 SA ID Numbers");
                 }
             },
-
-            Vault: {
-                render() {
-                    const items = [{k:'STRIPE_PROD_SK', e:'Production'}, {k:'OPENAI_API_KEY', e:'Global'}, {k:'AWS_SECRET_ID', e:'Production'}];
-                    document.getElementById('vault-grid').innerHTML = items.map((i, idx) => `
-                        <div class="glass p-4 rounded-lg border border-border flex items-center justify-between group">
-                            <div class="flex items-center gap-4">
-                                <i class="ph-fill ph-lock-key text-textDim group-hover:text-primary transition-colors"></i>
-                                <div><div class="font-mono text-xs text-text font-bold">${i.k}</div><div class="text-[10px] text-textDim uppercase">${i.e}</div></div>
-                            </div>
-                            <div class="font-mono text-xs text-textDim blur-sm select-none group-hover:blur-none transition-all cursor-pointer">sk_live_...4829</div>
-                        </div>
-                    `).join('');
-                }
-            },
-
             Canvas: {
-                initTopology() {
+                init() {
                     const c = document.getElementById('topology-canvas');
                     const ctx = c.getContext('2d');
-                    
                     const resize = () => { c.width = c.parentElement.offsetWidth; c.height = c.parentElement.offsetHeight; };
                     window.addEventListener('resize', resize); setTimeout(resize, 100);
-
                     const nodes = [{x:0.5,y:0.5,c:'#3B82F6'},{x:0.3,y:0.3,c:'#64748B'},{x:0.7,y:0.3,c:'#64748B'},{x:0.5,y:0.7,c:'#64748B'}];
-                    
                     function animate() {
                         if(c.width===0) return requestAnimationFrame(animate);
                         ctx.clearRect(0,0,c.width,c.height);
-                        
-                        // Connections
                         ctx.beginPath(); ctx.strokeStyle='rgba(255,255,255,0.05)';
                         nodes.slice(1).forEach(n => { ctx.moveTo(nodes[0].x*c.width, nodes[0].y*c.height); ctx.lineTo(n.x*c.width, n.y*c.height); });
                         ctx.stroke();
-
-                        // Nodes
                         nodes.forEach((n,i) => {
                             const cx = n.x*c.width; const cy = n.y*c.height + Math.sin(Date.now()/1000+i)*5;
                             ctx.beginPath(); ctx.fillStyle=n.c; ctx.arc(cx,cy,i===0?6:4,0,Math.PI*2); ctx.fill();
-                            if(i===0) { // Core Pulse
-                                ctx.beginPath(); ctx.strokeStyle='rgba(59,130,246,0.2)'; ctx.arc(cx,cy,20+Math.sin(Date.now()/500)*5,0,Math.PI*2); ctx.stroke();
-                            }
+                            if(i===0) { ctx.beginPath(); ctx.strokeStyle='rgba(59,130,246,0.2)'; ctx.arc(cx,cy,20+Math.sin(Date.now()/500)*5,0,Math.PI*2); ctx.stroke(); }
                         });
                         requestAnimationFrame(animate);
                     }
@@ -380,7 +376,6 @@
                 }
             }
         };
-
         document.addEventListener('DOMContentLoaded', () => App.init());
     </script>
 </body>
